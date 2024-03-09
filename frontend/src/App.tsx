@@ -3,7 +3,7 @@ import './App.css'
 import { Button } from '@nextui-org/react'
 import Footer from './modules/Footer'
 // import {Footer} from "./modules/Footer"
-import Login from './modules/Login'
+import Login from './screens/Login'
 
 function App() {
 
