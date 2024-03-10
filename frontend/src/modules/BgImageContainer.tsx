@@ -1,16 +1,15 @@
 import React from 'react';
 import bgimage from "../assets/BgImg.png"
-import Footer from './Footer';
 
 const BgImageContainer = ({ children }) => {
   return (
-    <div className="bg-image-container h-full w-full">
+    <div className="bg-image-container relative h-[100vh] w-full">
       <img
         src={bgimage}
-
+        alt="Background Image"
         className="bg-image absolute top-0 left-0 h-full w-full object-cover z-0"
       />
-      {children}
+      <div className="z-10 relative">{children}</div>
     </div>
   );
 };

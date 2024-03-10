@@ -7,19 +7,20 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App";
 import Login from "./screens/Login.tsx";
 import BgImageContainer from "./modules/BgImageContainer.tsx";
-import { AuthProvider } from "./utils/AuthProvider.ts";
+
+import { SnackbarProvider } from "notistack";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <NextUIProvider>
       <BrowserRouter>
-      <BgImageContainer>
-        
-        <Routes >
-          
-          <Route path="/login" element={<Login />} />
-          <Route path="/home" element={<App />} />
-        </Routes>
+        <BgImageContainer>
+          <SnackbarProvider maxSnack={3}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/home" element={<App />} />
+            </Routes>
+          </SnackbarProvider>
         </BgImageContainer>
       </BrowserRouter>
     </NextUIProvider>

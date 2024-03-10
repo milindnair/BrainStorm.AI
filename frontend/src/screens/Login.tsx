@@ -20,10 +20,12 @@ import { createUser } from "../utils/userController";
 import { localStorageHandler } from "../utils/localStorageHandler";
 import { useNavigate } from "react-router-dom";
 // import { localStorageHandler } from "@/utils/localStorage/localStorageHandler";
+import { useSnackbar } from "notistack";
 
 export default function Login() {
   // const router = useRouter();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSignIn = async () => {
     try {
@@ -32,7 +34,8 @@ export default function Login() {
       const user = result.user;
       await createUser(user);
       await localStorageHandler({email: user.email,name: user.displayName,photoURL: user.photoURL,uid: user.uid });
-      navigate('/dashboard ');
+      enqueueSnackbar('Login SuccessFull!', { variant: 'success' });
+      navigate('/home ');
 
     } catch (error) {
       console.log(error);

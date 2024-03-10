@@ -4,7 +4,7 @@ import { Button } from '@nextui-org/react'
 import Footer from './modules/Footer'
 // import {Footer} from "./modules/Footer"
 import Login from './screens/Login'
-import { useNavigate ,use} from 'react-router-dom'
+import { useNavigate ,} from 'react-router-dom'
 
 function App() {
   const [user,setUser] = useState(null);
@@ -26,8 +26,8 @@ function App() {
 
   return (
     <>
-     <h2 className='z-1 font-bold text-7xl'>{user}</h2>
-
+     <h2 className=' font-bold text-7xl text-[black]'>{user}</h2>
+      
     </>
   )
 }
