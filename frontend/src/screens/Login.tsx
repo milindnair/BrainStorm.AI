@@ -16,47 +16,52 @@ import {
   setPersistence,
   signInWithPopup,
 } from "firebase/auth";
+import { createUser } from "../utils/userController";
+import { localStorageHandler } from "../utils/localStorageHandler";
+import { useNavigate } from "react-router-dom";
 // import { localStorageHandler } from "@/utils/localStorage/localStorageHandler";
 
 export default function Login() {
   // const router = useRouter();
+  const navigate = useNavigate();
 
   const handleSignIn = async () => {
     try {
       await setPersistence(auth, browserSessionPersistence);
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      // await createUser(user);
-      // await localStorageHandler({email: user.email,name: user.displayName,photoURL: user.photoURL,uid: user.uid });
-      // router.push("/leaderboard");
+      await createUser(user);
+      await localStorageHandler({email: user.email,name: user.displayName,photoURL: user.photoURL,uid: user.uid });
+      navigate('/dashboard ');
+
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <div className="overflow-hidden">
-      <div>
+    <div className="h-[100vh] overflow-hidden flex flex-col">
+      <div className="w-full ">
         <img
           src={logo}
           alt=""
-          className="absolute top-10 ml-[-5%]  z-1 scale-75"
+          className="ml-[1rem]  z-1 scale-75"
         />
       </div>
       <div>
         <img
           src={illustration}
           alt=""
-          className="absolute top-[30vh] ml-[-5%]  z-1"
+          className=" ml-[0.5rem]  z-1 scale-80"
         />
       </div>
 
-      <Card className=" mt-[70vh]">
+      <Card className=" mt-5 w-[90vw] ml-[5vw]">
         <CardHeader className="flex flex-col w-full flex justify-center align-center">
           <p className="text-[24px] font-semibold font-rubik">
             Login or Signup
           </p>
-          <h2 className="text-[16px] text-[#858494] font-normal pl-2 w-full flex justify-center align-center text-center font-rubik">
+          <h2 className="text-[14px] text-[#858494] font-normal pl-2 w-full flex justify-center align-center text-center font-rubik">
             Login or create an account to take quiz, take part in challenge, and
             more.
           </h2>

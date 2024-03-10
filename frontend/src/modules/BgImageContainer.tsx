@@ -1,5 +1,6 @@
 import React from 'react';
 import bgimage from "../assets/BgImg.png"
+import Footer from './Footer';
 
 const BgImageContainer = ({ children }) => {
   return (
