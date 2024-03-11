@@ -5,6 +5,7 @@ import Footer from './modules/Footer'
 // import {Footer} from "./modules/Footer"
 import Login from './screens/Login'
 import { useNavigate ,} from 'react-router-dom'
+import HeaderCard from './components/HeaderCard'
 
 function App() {
   const [user,setUser] = useState(null);
@@ -25,10 +26,13 @@ function App() {
   ,[])
 
   return (
-    <>
-     <h2 className=' font-bold text-7xl text-[black]'>{user}</h2>
-      
-    </>
+    <div className='h-[100vh]'>
+      <div className='pt-5'>
+      <HeaderCard />
+      </div>
+    
+     <Footer />
+    </div>
   )
 }
 

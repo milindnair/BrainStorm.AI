@@ -12,6 +12,11 @@ export default {
         rubik: ["rubik","sans-serif"],
       },
     },
+    colors:{
+      primary: "6A5AE0",
+      skin: "#eda987",
+      white: "#FFFEFC"
+    }
   },
   darkMode: "class",
   plugins: [nextui()],

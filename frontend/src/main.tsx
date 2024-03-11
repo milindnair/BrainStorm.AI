@@ -17,7 +17,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <BgImageContainer>
           <SnackbarProvider maxSnack={3}>
             <Routes>
-              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<App />} />
+              <Route  path="/login" element={<Login />} />
               <Route path="/home" element={<App />} />
             </Routes>
           </SnackbarProvider>
