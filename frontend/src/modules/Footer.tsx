@@ -38,7 +38,7 @@ const Footer = () => {
           <Home size="25" color="#8796a1" />
         </Button>
       </div>
-      <div className="absolute bg-[white] h-[8%] w-[20%] top-[92%] left-[20%] flex items-center justify-center">
+      <div className="absolute bg-[white] h-[8%] w-[20%] top-[92%] left-[20%] flex items-center justify-center rounded-tr-lg">
         <Button isIconOnly className="bg-inherit">
           <SearchNormal1 size="25" color="#8796a1" />
         </Button>
@@ -48,7 +48,7 @@ const Footer = () => {
           <AddCircle size="49" color="#ffff" variant="Bold" />
         </div>
       </div>
-      <div className="absolute bg-[white] h-[8%] w-[20%] top-[92%] left-[60%] flex items-center justify-center">
+      <div className="absolute bg-[white] h-[8%] w-[20%] top-[92%] left-[60%] flex items-center justify-center rounded-tl-lg">
         <Button isIconOnly className="bg-inherit">
           <Rank size="25" color="#8796a1" />
         </Button>
