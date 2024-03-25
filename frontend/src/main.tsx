@@ -9,9 +9,12 @@ import Login from "./screens/Login.tsx";
 import BgImageContainer from "./modules/BgImageContainer.tsx";
 
 import { SnackbarProvider } from "notistack";
+import CreateQuiz from "./screens/CreateQuiz.tsx";
+import { ThemeProvider } from "@material-tailwind/react";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    <ThemeProvider>
     <NextUIProvider>
       <BrowserRouter>
         <BgImageContainer>
@@ -20,10 +23,12 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/" element={<App />} />
               <Route  path="/login" element={<Login />} />
               <Route path="/home" element={<App />} />
+              <Route path="/create-quiz" element={<CreateQuiz />} />
             </Routes>
           </SnackbarProvider>
         </BgImageContainer>
       </BrowserRouter>
     </NextUIProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );
