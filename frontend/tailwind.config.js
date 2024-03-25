@@ -10,6 +10,7 @@ export default {
     extend: {
       fontFamily: {
         rubik: ["rubik","sans-serif"],
+        Monterrat: ["Montserrat", "sans-serif"],
       },
     },
     colors:{

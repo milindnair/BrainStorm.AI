@@ -8,7 +8,7 @@ import { useNavigate ,} from 'react-router-dom'
 import HeaderCard from './components/HeaderCard'
 import RecentQuiz from './components/RecentQuiz'
 import UploadPDF from './components/UploadPDF'
-
+import PdfTextExtractor from './components/PdfTextExtractor'
 function App() {
   const [user,setUser] = useState(null);
   const navigate = useNavigate();
@@ -32,12 +32,13 @@ function App() {
       <div className='pt-5'>
       <HeaderCard />
       </div>
-      <div className='mt-10'>
+      <div className='mt-10 ml-[5%]'>
         <RecentQuiz />
       </div>
-      <div className='mt-10'>
+      <div className='mt-10 ml-[5%]'>
         <UploadPDF />
       </div>
+      {/* <PdfTextExtractor /> */}
     
      <Footer />
     </div>

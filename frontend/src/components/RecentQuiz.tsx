@@ -6,7 +6,7 @@ type Props = {}
 
 const RecentQuiz = (props: Props) => {
   return (
-    <div className="w-[90%] flex justify-around  ml-[5%] items-center">
+    <div className="w-[90%] flex justify-around   items-center">
       <div className="glassmorphism">
         <div className="flex flex-col w-[80%]">
           <div className="font-medium font-rubik text-[#c07985]">RECENT QUIZ</div>
