@@ -17,6 +17,7 @@
     "framer-motion": "^11.0.8",
     "iconsax-react": "^0.0.8",
     "notistack": "^3.0.1",
+    "pdf-parse": "^1.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-file-drop": "^3.1.6",
@@ -24,6 +25,7 @@
     "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
+    "@types/pdf-parse": "^1.1.4",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^6.21.0",

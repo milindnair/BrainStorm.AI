@@ -1,25 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../modules/Footer";
 import Title from "../components/Title";
 import { Button, Checkbox, Input } from "@material-tailwind/react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, setDoc,doc } from "firebase/firestore";
 import { db } from "../utils/Firebaseconfig";
+import { useSnackbar } from "notistack";
 
 const CreateQuiz = () => {
-  const {state} = useLocation();
+  const { state } = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [title,setTitle] = useState("");
-  const [numQuestions,setNumQuestions] = useState("");
-  const [description,setDescription] = useState("");
+  const [title, setTitle] = useState("");
+  const [numQuestions, setNumQuestions] = useState("");
+  const [description, setDescription] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+  const [categoryDisplayText, setCategoryDisplayText] = useState("Select Category");
 
-  const categories = ["Category 1", "Category 2", "Category 3", "Category 4"];
+  const categories = [
+    "Multiple Choice Questions",
+    "True or False",
+    "Fill in the blanks",
+    "Match the following",
+  ];
 
   const toggleShowCategories = () => {
     setShowCategories(!showCategories);
-  };
+    if (selectedCategories.length > 0) {
+       setCategoryDisplayText(selectedCategories.join(", "));
+    } else {
+       setCategoryDisplayText("Select Category");
+    }
+   };
 
   const handleCategoryChange = (category) => {
     const currentIndex = selectedCategories.indexOf(category);
@@ -37,22 +50,39 @@ const CreateQuiz = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const quizData = {
-        title,
-        numQuestions,
-        description,
-        categories: selectedCategories,
-      };
-      console.log(quizData);
-      const docRef = await addDoc(collection(db, "quizzes"), quizData);
-      console.log("Document written with ID: ", docRef.id);
-      // Redirect to quiz page or handle success
+       const quizData = {
+         title,
+         numQuestions,
+         description,
+         categories: selectedCategories,
+         extractedText: state.text
+       };
+       console.log(quizData);
+   
+  
+       const today = new Date();
+       const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+   
+ 
+       const customDocId = `${title.replace(/\s+/g, '_')}_${formattedDate}`;
+   
+  
+       const docRef = doc(db, "quizzes", customDocId);
+       await setDoc(docRef, quizData);
+   
+       console.log("Document written with ID: ", docRef.id);
+    
+       enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
     } catch (error) {
-      console.error("Error adding quiz:", error);
-      // Handle error
+       console.error("Error adding quiz:", error);
+       
     }
-  };
+   };
+   
+   
+   
 
+  // console.log(state.text);
 
   return (
     <div className="h-screen flex flex-col justify-between">
@@ -72,15 +102,24 @@ const CreateQuiz = () => {
                 className: "hidden ",
               }}
               size="lg"
-              containerProps={{ className: "min-w-[100px] min-h-[50px] font-Monterrat text-uppercase" }}
+              containerProps={{
+                className:
+                  "min-w-[100px] min-h-[50px] font-Monterrat text-uppercase",
+              }}
               crossOrigin={undefined}
-              style={{ borderRadius: "12px",textTransform: "uppercase",transform: "uppercase"}}
+              style={{
+                borderRadius: "12px",
+                textTransform: "uppercase",
+                transform: "uppercase",
+              }}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div className="flex flex-col justify-center w-full p-2">
-            <h2 className="text-2xl font-semibold mb-2 font-rubik">Number Of Questions</h2>
+            <h2 className="text-2xl font-semibold mb-2 font-rubik">
+              Number Of Questions
+            </h2>
             <Input
               type="number"
               placeholder="Enter Number Of Questions"
@@ -88,22 +127,34 @@ const CreateQuiz = () => {
               labelProps={{
                 className: "hidden",
               }}
-              containerProps={{ className: "min-w-[100px] min-h-[50px] font-Monterrat" }}
+              containerProps={{
+                className: "min-w-[100px] min-h-[50px] font-Monterrat",
+              }}
               crossOrigin={undefined}
-              style={{ borderRadius: "12px",textTransform: "uppercase",transform: "uppercase" }}
+              style={{
+                borderRadius: "12px",
+                textTransform: "uppercase",
+                transform: "uppercase",
+              }}
               value={numQuestions}
               onChange={(e) => setNumQuestions(e.target.value)}
             />
           </div>
           <div className="flex flex-col justify-center w-full p-2">
-            <h2 className="text-2xl font-semibold mb-2 font-rubik">Quiz Category</h2>
+            <h2 className="text-2xl font-semibold mb-2 font-rubik">
+              Quiz Category
+            </h2>
             <div className="relative">
               <div
                 className="flex items-center justify-between px-4 py-2 rounded border border-gray-300 cursor-pointer min-h-[50px] font-rubik"
                 onClick={toggleShowCategories}
-                style={{ borderRadius: "12px",textTransform: "uppercase",transform: "uppercase" }}
+                style={{
+                  borderRadius: "12px",
+                  textTransform: "uppercase",
+                  transform: "uppercase",
+                }}
               >
-                <span>Select Category</span>
+                <span>{categoryDisplayText}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
@@ -111,26 +162,35 @@ const CreateQuiz = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
               {showCategories && (
                 <div className="absolute top-full left-0 w-full mt-1 p-2 bg-white border border-gray-300 rounded shadow-lg font-rubik">
                   {categories.map((category) => (
-                    <Checkbox
-                      key={category}
-                      checked={selectedCategories.includes(category)}
-                      onChange={() => handleCategoryChange(category)}
-                      label={category}
-                      style={{ borderRadius: "12px" }}
-                    />
+                    <div key={category} className="mb-2">
+                      {" "}
+                      <Checkbox
+                        checked={selectedCategories.includes(category)}
+                        onChange={() => handleCategoryChange(category)}
+                        label={category}
+                        style={{ borderRadius: "12px" }}
+                      />
+                    </div>
                   ))}
                 </div>
               )}
             </div>
           </div>
           <div className="flex flex-col justify-center w-full p-2">
-            <h2 className="text-2xl font-semibold mb-2 font-rubik">Description</h2>
+            <h2 className="text-2xl font-semibold mb-2 font-rubik">
+              Description
+            </h2>
             <textarea
               placeholder="Enter Description"
               className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-500 placeholder:font-rubik text-uppercase"
@@ -141,7 +201,12 @@ const CreateQuiz = () => {
             ></textarea>
           </div>
           <div className="p-2">
-            <Button className="font-rubik bg-[#6a5ae0] text-lg w-full" children={undefined} placeholder={undefined}  onClick={handleSubmit}>
+            <Button
+              className="font-rubik bg-[#6a5ae0] text-lg w-full"
+              children={undefined}
+              placeholder={undefined}
+              onClick={handleSubmit}
+            >
               Add Quiz
             </Button>
           </div>
