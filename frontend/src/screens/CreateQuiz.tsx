@@ -2,10 +2,18 @@ import { useState } from "react";
 import Footer from "../modules/Footer";
 import Title from "../components/Title";
 import { Button, Checkbox, Input } from "@material-tailwind/react";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../utils/Firebaseconfig";
 
 const CreateQuiz = () => {
+  const {state} = useLocation();
   const [showCategories, setShowCategories] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [title,setTitle] = useState("");
+  const [numQuestions,setNumQuestions] = useState("");
+  const [description,setDescription] = useState("");
 
   const categories = ["Category 1", "Category 2", "Category 3", "Category 4"];
 
@@ -26,6 +34,26 @@ const CreateQuiz = () => {
     setSelectedCategories(newSelectedCategories);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const quizData = {
+        title,
+        numQuestions,
+        description,
+        categories: selectedCategories,
+      };
+      console.log(quizData);
+      const docRef = await addDoc(collection(db, "quizzes"), quizData);
+      console.log("Document written with ID: ", docRef.id);
+      // Redirect to quiz page or handle success
+    } catch (error) {
+      console.error("Error adding quiz:", error);
+      // Handle error
+    }
+  };
+
+
   return (
     <div className="h-screen flex flex-col justify-between">
       <div>
@@ -37,7 +65,7 @@ const CreateQuiz = () => {
           <div className="flex flex-col justify-center w-full p-2">
             <h2 className="text-2xl font-semibold mb-2 font-rubik">Title</h2>
             <Input
-              type="email"
+              type="text"
               placeholder="Enter Quiz Title"
               className="!border placeholder:font-rubik font-Monterrat text-uppercase !border-gray-300 bg-white text-gray-900 shadow-lg shadow-gray-900/5 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900 focus:!border-t-gray-900 focus:ring-gray-900/10"
               labelProps={{
@@ -47,6 +75,8 @@ const CreateQuiz = () => {
               containerProps={{ className: "min-w-[100px] min-h-[50px] font-Monterrat text-uppercase" }}
               crossOrigin={undefined}
               style={{ borderRadius: "12px",textTransform: "uppercase",transform: "uppercase"}}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div className="flex flex-col justify-center w-full p-2">
@@ -61,6 +91,8 @@ const CreateQuiz = () => {
               containerProps={{ className: "min-w-[100px] min-h-[50px] font-Monterrat" }}
               crossOrigin={undefined}
               style={{ borderRadius: "12px",textTransform: "uppercase",transform: "uppercase" }}
+              value={numQuestions}
+              onChange={(e) => setNumQuestions(e.target.value)}
             />
           </div>
           <div className="flex flex-col justify-center w-full p-2">
@@ -104,10 +136,12 @@ const CreateQuiz = () => {
               className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-500 placeholder:font-rubik text-uppercase"
               rows={4}
               style={{ borderRadius: "12px" }}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </div>
           <div className="p-2">
-            <Button className="font-rubik bg-[#6a5ae0] text-lg w-full" children={undefined} placeholder={undefined}>
+            <Button className="font-rubik bg-[#6a5ae0] text-lg w-full" children={undefined} placeholder={undefined}  onClick={handleSubmit}>
               Add Quiz
             </Button>
           </div>

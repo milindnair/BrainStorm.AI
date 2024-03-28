@@ -1,14 +1,17 @@
-import React, { useRef, useState } from "react";
-import axios from 'axios';
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { FileDrop } from "react-file-drop";
 import { Progress } from "@nextui-org/react";
 import { TickCircle } from "iconsax-react";
+import pdfIcon from "../assets/pdf-icon.svg";
+import { useNavigate } from "react-router-dom";
 
 const UploadPDF = () => {
   const fileInputRef = useRef(null);
   const [uploadedPDF, setUploadedPDF] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
+  const navigate = useNavigate();
 
   const onFileInputChange = (event) => {
     const { files } = event.target;
@@ -33,16 +36,22 @@ const UploadPDF = () => {
 
   const uploadFile = async (file) => {
     const formData = new FormData();
-    formData.append('pdf', file);
+    formData.append("pdf", file);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/text/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        onUploadProgress: progressEvent => {
-          const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-          setUploadProgress(progress);
+      const response = await axios.post(
+        "http://localhost:8000/api/text/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setUploadProgress(progress);
+          },
         }
-      });
+      );
 
       setText(response.data.text);
     } catch (error) {
@@ -50,20 +59,21 @@ const UploadPDF = () => {
     }
   };
 
+  useEffect(() => {
+    if(text.length > 0) {
+      navigate('/create-quiz', {state: {text}});
+    }
+  }, [text]);
+
   return (
     <div className="w-[90%] bg-red-500 h-[50vh] p-3 bg-white">
       <p className="text-center font-Montserrat text-2xl">UPLOAD PDF</p>
-      <div className="h-[20%] flex justify-center items-center">
-        <svg
-          className="icon file-icon file-icon--pdf w-12 h-12 mr-4"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 19.607 24"
-        >
-          {/* SVG Paths for PDF icon */}
-        </svg>
-        {uploadedPDF && (
+
+      {uploadedPDF && (
+        <div className="h-[20%] flex justify-center items-center">
+          <img src={pdfIcon} alt="" className="h-[50px] w-[50px]" />
           <div className="flex flex-col items-center h-full justify-center gap-3 mt-4 w-full ">
-            <div>
+            <div className="flex gap-2 items-center">
               <h2 className="font-Monterrat">
                 {uploadedPDF ? `${uploadedPDF}` : "Progress"}
               </h2>
@@ -71,8 +81,9 @@ const UploadPDF = () => {
             </div>
             <Progress value={uploadProgress} size="md" />
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
       <FileDrop onTargetClick={onTargetClick} onDrop={(f) => fileHandler(f)}>
         <input
           onChange={onFileInputChange}
@@ -91,12 +102,7 @@ const UploadPDF = () => {
           </h2>
         </div>
       </FileDrop>
-      {text && (
-        <div>
-          <h2>Extracted Text:</h2>
-          <div className="text-container">{text}</div>
-        </div>
-      )}
+      
     </div>
   );
 };
