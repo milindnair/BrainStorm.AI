@@ -34,7 +34,7 @@ const Footer = () => {
     //     <Profile size="32" color="#FF8A65" />
     //   </Button>
     // </div>
-    <div className="flex flex-row  ">
+    <div className="flex flex-row">
       <div className="absolute bg-[white] h-[8%] top-[92%] w-[20%] rounded-tl-2xl flex items-center justify-center">
         <Button isIconOnly className="bg-inherit">
           <Home size="25" color="#8796a1" />

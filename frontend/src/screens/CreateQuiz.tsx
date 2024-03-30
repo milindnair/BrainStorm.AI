@@ -59,7 +59,7 @@ const CreateQuiz = () => {
        };
        console.log(quizData);
    
-  
+   
        const today = new Date();
        const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
    
@@ -85,9 +85,9 @@ const CreateQuiz = () => {
   // console.log(state.text);
 
   return (
-    <div className="h-screen flex flex-col justify-between">
+    <div className="h-full flex flex-col justify-between">
       <div>
-        <div className="pt-[25px]">
+        <div className="pt-[48px]">
           <Title name={"Create Quiz"} />
         </div>
 
@@ -194,15 +194,14 @@ const CreateQuiz = () => {
             <textarea
               placeholder="Enter Description"
               className="px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-blue-500 placeholder:font-rubik text-uppercase"
-              rows={4}
               style={{ borderRadius: "12px" }}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </div>
-          <div className="p-2">
+          <div className="mt-10">
             <Button
-              className="font-rubik bg-[#6a5ae0] text-lg w-full"
+              className="font-rubik bg-[#4836BE] text-lg w-full"
               children={undefined}
               placeholder={undefined}
               onClick={handleSubmit}
@@ -213,7 +212,6 @@ const CreateQuiz = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };
