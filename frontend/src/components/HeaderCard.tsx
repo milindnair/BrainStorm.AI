@@ -2,7 +2,8 @@ import { AvatarIcon,Avatar } from "@nextui-org/react";
 import React from "react";
 
 type Props = {
-  usrname: String
+  usrname: String,
+  photoURL: any
 };
 
 const HeaderCard = (props: Props) => {
@@ -15,7 +16,7 @@ const HeaderCard = (props: Props) => {
         </div>
       </div>
       <div className="w-[20%]">        
-        <Avatar  src="https://i.pravatar.cc/150?u=a042581f4e29026024d" className="h-14 w-14" />
+        <Avatar  src={props.photoURL} className="h-14 w-14" />
       </div>
     </div>
   );

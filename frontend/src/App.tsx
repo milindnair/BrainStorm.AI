@@ -8,14 +8,16 @@ import RecentQuiz from './components/RecentQuiz'
 
 function App() {
   const [user,setUser] = useState("");
+  const [userPhoto, setUserPhoto] = useState("")
   const navigate = useNavigate();
   useEffect(() =>
   {
     const user = localStorage.getItem('name');
-    if(user)
+    const profilePic = localStorage.getItem('photoURL')
+    if(user && profilePic)
     {
       setUser(JSON.parse(user));
-      console.log(user);
+      setUserPhoto(JSON.parse(profilePic))
     }
     else{
       navigate("/login");
@@ -26,7 +28,7 @@ function App() {
   return (
     <div className='h-[100vh]'>
       <div className='pt-5'>
-      <HeaderCard usrname={user} />
+      <HeaderCard usrname={user} photoURL={userPhoto}/>
       </div>
       <div className='mt-10 ml-[5%]'>
         <RecentQuiz usrname={user}/>
