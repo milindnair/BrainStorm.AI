@@ -62,13 +62,13 @@ const UploadPDF = () => {
 
  useEffect(() => {
     if(text.length > 0) {
-      navigate('/create-quiz', {state: {text}});
+      // navigate('/create-quiz', {state: {text}});
     }
  }, [text]);
 
   return (
-    <div className="w-[90%] bg-red-500 h-[50vh] p-3 bg-white">
-      <p className="text-center font-Montserrat text-2xl">UPLOAD PDF</p>
+    <div className="w-full bg-red-500 h-[25vh] bg-white">
+      <p className="text-center font-Montserrat text-2xl bg-gray-300">UPLOAD PDF</p>
 
       {uploadedPDF && (
         <div className="h-[20%] flex justify-center items-center">
@@ -93,8 +93,8 @@ const UploadPDF = () => {
           className="hidden"
         />
         <div
-          className="border border-dotted flex flex-col items-center justify-center h-full"
-          style={{ height: "30vh" }}
+          className="border border-dotted flex flex-col items-center justify-center"
+          style={{ height: "20vh" }}
         >
           <h2 className="font-Montserrat text-xl font-light">DRAG FILE HERE</h2>
           <h2 className="font-Montserrat text-xl font-light">

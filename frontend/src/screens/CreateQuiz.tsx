@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import Footer from "../modules/Footer";
 import Title from "../components/Title";
 import { Button, Checkbox, Input } from "@material-tailwind/react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { addDoc, collection, setDoc,doc } from "firebase/firestore";
+import { addDoc, collection, setDoc,doc} from "firebase/firestore";
 import { db } from "../utils/Firebaseconfig";
 import { useSnackbar } from "notistack";
+import UploadPDF from '../components/UploadPDF';
 
 const CreateQuiz = () => {
   const { state } = useLocation();
@@ -87,11 +87,11 @@ const CreateQuiz = () => {
   return (
     <div className="h-full flex flex-col justify-between">
       <div>
-        <div className="pt-[48px]">
+        <div className="">
           <Title name={"Create Quiz"} />
         </div>
 
-        <div className="h-[75vh] mt-10 m-4 p-4 rounded-2xl bg-white flex flex-col gap-5">
+        <div className="max-h-[75vh] mt-24 m-4 p-4 rounded-2xl bg-white flex flex-col gap-5 overflow-auto">
           <div className="flex flex-col justify-center w-full p-2">
             <h2 className="text-2xl font-semibold mb-2 font-rubik">Title</h2>
             <Input
@@ -199,17 +199,19 @@ const CreateQuiz = () => {
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </div>
-          <div className="mt-10">
+          <div className='border-black border-dotted border-2 -mt-3 '>
+            <UploadPDF />
+          </div>
+        </div>
+        <div className="mt-5 grid">
             <Button
-              className="font-rubik bg-[#4836BE] text-lg w-full"
-              children={undefined}
+              className="font-rubik bg-[#4836BE] text-lg w-[90%] justify-self-center"
               placeholder={undefined}
               onClick={handleSubmit}
             >
               Add Quiz
             </Button>
           </div>
-        </div>
       </div>
 
     </div>

@@ -11,9 +11,9 @@ const Title = (props: Props) => {
     
 
   return (
-    <div className='flex  flex-row  items-center'>
-        <ArrowLeft size={32} color='#FFFEFC' className='mr-20' onClick={()=>navigate(-1)} />
-        <h1 className="text-3xl font-rubik text-center ml-5 text-white">{props.name}</h1>
+    <div className='flex flex-row items-center fixed p-6 w-full'>
+        <ArrowLeft size={32} color='#FFFEFC' className="" onClick={()=>navigate(-1)} />
+        <h1 className="text-3xl font-rubik text-center text-white mx-auto">{props.name}</h1>
     </div>
   )
 }

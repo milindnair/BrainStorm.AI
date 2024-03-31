@@ -36,7 +36,7 @@ const Footer = () => {
     // </div>
     <div className="flex flex-row">
       <div className="absolute bg-[white] h-[8%] top-[92%] w-[20%] rounded-tl-2xl flex items-center justify-center">
-        <Button isIconOnly className="bg-inherit">
+        <Button isIconOnly className="bg-inherit" onClick={() => navigate('/home')}>
           <Home size="25" color="#8796a1" />
         </Button>
       </div>
@@ -56,7 +56,7 @@ const Footer = () => {
         </Button>
       </div>
       <div className="absolute bg-[white] h-[8%] w-[20%] top-[92%] left-[80%] rounded-tr-2xl flex items-center justify-center">
-        <Button isIconOnly className="bg-inherit">
+        <Button isIconOnly className="bg-inherit" onClick={()=> navigate('/profile')}>
           <Profile size="25" color="#8796a1" />
         </Button>
       </div>
