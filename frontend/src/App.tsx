@@ -5,6 +5,7 @@ import { useNavigate ,} from 'react-router-dom'
 import HeaderCard from './components/HeaderCard'
 import RecentQuiz from './components/RecentQuiz'
 // import PdfTextExtractor from './components/PdfTextExtractor'
+import BarChart from './modules/DataVisualization/BarChart'
 
 function App() {
   const [user,setUser] = useState("");
@@ -32,6 +33,9 @@ function App() {
       </div>
       <div className='mt-10 ml-[5%]'>
         <RecentQuiz usrname={user}/>
+      </div>
+      <div>
+        {/* <BarChart /> */}
       </div>
       {/* <PdfTextExtractor /> */}
      <Footer />
