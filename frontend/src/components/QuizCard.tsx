@@ -19,7 +19,13 @@ function QuizCard(props: Props) {
                 <div className="w-[55%]">
                     <h1 className="text-2xl">{props.quiz.title}</h1>
                 </div>
-                <div className={loc.pathname.includes("generated") ? "hidden" : "w-[40%] grid justify-items-end"}>        
+            </CardHeader>
+            <CardBody className="h-[vh] flex flex-row">
+                <p className="">
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
+                    Cupiditate minima labore ad quaerat totam harum
+                </p>
+                <div className={loc.pathname.includes("generated") ? "hidden" : "w-[40%] grid justify-items-center items-start"}>        
                     <CircularProgress
                     label="Score"
                     size="lg"
@@ -28,13 +34,6 @@ function QuizCard(props: Props) {
                     showValueLabel={true}
                     />
                 </div>
-            </CardHeader>
-            <CardBody className="h-[10vh]">
-                <p className="">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. 
-                    Cupiditate minima labore ad quaerat totam harum quasi quibusdam reiciendis dolorem
-                    facilis.
-                </p>
             </CardBody> 
         </Card>
     </div>

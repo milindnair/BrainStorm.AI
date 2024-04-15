@@ -74,7 +74,6 @@ function ProfilePage() {
             })
             }
             </div>
-
             <Footer />
         </div>
     )

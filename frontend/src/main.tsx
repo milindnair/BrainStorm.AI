@@ -23,10 +23,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <Routes>
               <Route path="/" element={<App />} />
               <Route  path="/login" element={<Login />} />
-              <Route path="/home" element={<App />} />
               <Route path="/create-quiz" element={<CreateQuiz />} />
-              <Route path="/profile-attempted" element={<ProfilePage />} />
-              <Route path="/profile-generated" element={<ProfilePage />} />
+              <Route path="/home" element={<App />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Routes>
           </SnackbarProvider>
         </BgImageContainer>

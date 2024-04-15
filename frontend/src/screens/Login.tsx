@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
-import { Avatar } from "@nextui-org/avatar";
 import { Button } from "@nextui-org/button";
 import "tailwindcss/tailwind.css";
 import illustration from "../assets/Illustration.svg";
@@ -35,7 +34,7 @@ export default function Login() {
       await createUser(user);
       await localStorageHandler({email: user.email,name: user.displayName,photoURL: user.photoURL,uid: user.uid });
       enqueueSnackbar('Login SuccessFull!', { variant: 'success' });
-      navigate('/home ');
+      navigate('/home');
 
     } catch (error) {
       console.log(error);
