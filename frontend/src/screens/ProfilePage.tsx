@@ -57,23 +57,6 @@ function ProfilePage() {
                 <HeaderCard usrname={user} photoURL={userPhoto}/>
             </div>
 
-            <div className="flex flex-row w-[80%] mx-auto border-2 border-white rounded-lg mt-5 font-rubik">
-                <Link to={'/profile-attempted'} className={`${navClass} ${loc.pathname.includes('attempted') ? 'text-black bg-white' : 'text-white'}`}>Attempted</Link>
-                <Link to={'/profile-generated'} className={`${navClass} ${loc.pathname.includes('generated') ? 'text-black bg-white' : 'text-white'}`}>Generated</Link>
-            </div>
-
-            <div>
-            {loc.pathname.includes('attempted') ? 
-            attemptedQuizzes.map((quiz) => {
-                    return(
-                        <QuizCard quiz={quiz}/>
-                    )
-                }) :
-            generatedQuizzes.map((quiz) => {
-                return <QuizCard quiz={quiz}/>
-            })
-            }
-            </div>
             <Footer />
         </div>
     )

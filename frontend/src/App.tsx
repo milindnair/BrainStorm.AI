@@ -48,7 +48,6 @@ function App() {
           setUserPhoto(JSON.parse(profilePic))
           console.log(user, userPhoto)
         }
-        getQuestions()
     }, [])
 
     const getQuestions = async () => {
@@ -65,22 +64,26 @@ function App() {
         {
             title: "ABC",
             score: 90,
-            category: ["Fill in the blanks"]
+            category: ["Fill in the blanks"],
+            q_id: "1"
         },
         {
             title: "EFG",
             score: 70,
-            category: ["Fill in the blanks", "Multiple Choice Questions"]
+            category: ["Fill in the blanks", "Multiple Choice Questions"],
+            q_id: "2"
         },
         {
           title: "HIJ",
           score: 60,
-          category: ["Fill in the blanks"]
-      },
+          category: ["Fill in the blanks"],
+          q_id: "3"
+        },
       {
           title: "KLM",
           score: 70,
-          category: ["Fill in the blanks", "Multiple Choice Questions"]
+          category: ["Fill in the blanks", "Multiple Choice Questions"],
+          q_id: "4"
       }
     ]
 
@@ -88,14 +91,18 @@ function App() {
         {
             title: "GEN1",
             score: 0,
-            category: ["Fill in the blanks"]
+            category: ["Fill in the blanks"],
+            q_id: "5"
         },
         {
             title: "GEN2",
             score: 0,
-            category: ["Fill in the blanks", "Multiple Choice Questions"]
+            category: ["Fill in the blanks", "Multiple Choice Questions"],
+            q_id: "6"
         }
     ]
+
+
 
   return (
     <div className='h-[100vh]'>
@@ -113,7 +120,8 @@ function App() {
             <Tabs 
               aria-label='Options'
               classNames={{
-                tabList: "w-full mt-4"
+                tabList: "w-full mt-4 p-0 h-12",
+                tab: "h-12 w-1/2",
               }}
             >
               <Tab key='attempted' title='Attempted'>
@@ -121,7 +129,7 @@ function App() {
                   {
                     attemptedQuizzes.map((quiz, index) => {
                       return(
-                          <QuizCard quiz={quiz}/>
+                          <QuizCard quiz={quiz} />
                       )
                   })
                   }
@@ -141,7 +149,7 @@ function App() {
             </Tabs>
             <Footer />
         </div>
-     <Footer />
+      <Footer />
     </div>
   )
 }
