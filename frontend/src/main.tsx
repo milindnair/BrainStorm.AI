@@ -12,6 +12,8 @@ import { SnackbarProvider } from "notistack";
 import CreateQuiz from "./screens/CreateQuiz.tsx";
 import { ThemeProvider } from "@material-tailwind/react";
 import ProfilePage from "./screens/ProfilePage.tsx";
+import QuizDetails from "./screens/QuizDetails.tsx";
+import Quiz from "./screens/Quiz.tsx";
 import Search from "./screens/Search.tsx";
 import Leaderboard from "./screens/Leaderboard.tsx";
 
@@ -28,6 +30,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/create-quiz" element={<CreateQuiz />} />
               <Route path="/home" element={<App />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/quizDetails/:qid" element={<QuizDetails />}/>
+              <Route path="/quiz/:qid" element={<Quiz />}/>
               <Route path="/search" element={<Search />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
             </Routes>

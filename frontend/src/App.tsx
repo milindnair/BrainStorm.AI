@@ -60,25 +60,29 @@ function App() {
       title: "ABC",
       score: 90,
       category: ["Fill in the blanks"],
-      status : "Attempted"
+      status : "Attempted",
+      q_id: "1" 
     },
     {
       title: "EFG",
       score: 70,
       category: ["Fill in the blanks", "Multiple Choice Questions"],
-      status : "Attempted"
+      status : "Attempted",
+      q_id: "2"
     },
     {
       title: "HIJ",
       score: 60,
       category: ["Fill in the blanks"],
-      status : "Attempted"
+      status : "Attempted",
+      q_id: "3"
     },
     {
       title: "KLM",
       score: 70,
       category: ["Fill in the blanks", "Multiple Choice Questions"],
-      status : "Attempted"
+      status : "Attempted",
+      q_id: "4"
     },
   ];
 
@@ -87,13 +91,17 @@ function App() {
       title: "GEN1",
       score: 0,
       category: ["Fill in the blanks"],
+      q_id: "5"
     },
     {
       title: "GEN2",
       score: 0,
       category: ["Fill in the blanks", "Multiple Choice Questions"],
+      q_id: "6"
     },
   ];
+
+
 
   return (
     <div className="h-[100vh]">
