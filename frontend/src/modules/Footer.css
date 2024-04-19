@@ -19,3 +19,7 @@
     border-radius:100%;
     transform:translatey(-50%);
 }
+
+.noScroll {
+    overflow: hidden;
+}
