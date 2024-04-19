@@ -5,7 +5,7 @@ import { useNavigate ,} from 'react-router-dom'
 import HeaderCard from './components/HeaderCard'
 import RecentQuiz from './components/RecentQuiz'
 
-import { Tabs, Tab, Card, CardBody} from "@nextui-org/react";
+import { Tabs, Tab, Card, CardBody, ScrollShadow} from "@nextui-org/react";
 
 import Title from "./components/Title"
 import { Link, useLocation } from "react-router-dom"
@@ -125,7 +125,8 @@ function App() {
               }}
             >
               <Tab key='attempted' title='Attempted'>
-                <Card className='overflow-auto max-h-[52vh]'>
+                <Card className='overflow-auto overflow-x-hidden max-h-[52vh]'>
+                <ScrollShadow hideScrollBar size={50}>
                   {
                     attemptedQuizzes.map((quiz, index) => {
                       return(
@@ -133,6 +134,7 @@ function App() {
                       )
                   })
                   }
+                </ScrollShadow>
                 </Card>
               </Tab>
 

@@ -1,7 +1,6 @@
     import { Card, CardHeader, CardBody} from "@nextui-org/card";
     import { CircularProgress } from '@nextui-org/react'
     import { useLocation, useNavigate } from "react-router-dom";
-    
 
     type Props = {
         quiz: {
@@ -36,7 +35,7 @@
                             Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                             Cupiditate minima labore ad quaerat totam harum
                         </p>
-                        <div className={loc.pathname.includes("generated") ? "hidden" : "w-[40%] grid justify-items-center items-start"}>
+                        <div className="w-[40%] grid justify-items-center items-start">
                             <CircularProgress
                             label="Score"
                             size="lg"
