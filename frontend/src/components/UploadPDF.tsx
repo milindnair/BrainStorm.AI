@@ -5,13 +5,16 @@ import { Progress } from "@nextui-org/react";
 import { TickCircle } from "iconsax-react";
 import pdfIcon from "../assets/pdf-icon.svg";
 import { useNavigate } from "react-router-dom";
+import { Spinner } from "@nextui-org/react";
 // import pdfParse from 'pdf-parse';
 
-const UploadPDF = () => {
+
+
+const UploadPDF = (props) => {
   const fileInputRef = useRef(null);
  const [uploadedPDF, setUploadedPDF] = useState(null);
  const [uploadProgress, setUploadProgress] = useState(0);
- const [text, setText] = useState("");
+
  const navigate = useNavigate();
 
  const onFileInputChange = (event) => {
@@ -36,6 +39,7 @@ const UploadPDF = () => {
  };
 
  const uploadFile = async (file) => {
+  props.onLoadingStart();
   const formData = new FormData();
   formData.append("pdf", file);
 
@@ -54,17 +58,14 @@ const UploadPDF = () => {
       }
     );
 
-    setText(response.data.text);
+    props.setText(response.data.text);
+    props.setSummary(response.data.summary);
+    props.onLoadingEnd();
   } catch (error) {
     console.error(error);
   }
 };
 
- useEffect(() => {
-    if(text.length > 0) {
-      // navigate('/create-quiz', {state: {text}});
-    }
- }, [text]);
 
   return (
     <div className="w-full bg-red-500 h-[25vh] bg-white">
@@ -103,14 +104,15 @@ const UploadPDF = () => {
           </h2>
         </div>
       </FileDrop>
-      {
+      {/* {
         text.length > 0 && (
           <div className="mt-5">
             <p className="font-Montserrat text-xl">Extracted Text</p>
             <p className="font-Montserrat text-lg">{text}</p>
           </div>
         )
-      }
+      } */}
+      
       
     </div>
   );

@@ -3,10 +3,16 @@ import Title from "../components/Title";
 import { Button, Checkbox, Input } from "@material-tailwind/react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { addDoc, collection, setDoc,doc} from "firebase/firestore";
+import { addDoc, collection, setDoc, doc } from "firebase/firestore";
 import { db } from "../utils/Firebaseconfig";
 import { useSnackbar } from "notistack";
-import UploadPDF from '../components/UploadPDF';
+import UploadPDF from "../components/UploadPDF";
+import { Spinner } from "@nextui-org/react";
+
+const mcqEndpoint = import.meta.env.VITE_MCQ_ENDPOINT;
+const trueOrFalseEndpoint = import.meta.env.VITE_TRUEORFALSE_ENDPOINT;
+const fillInTheBlankEndpoint = import.meta.env.VITE_FILLINTHEBLANK_ENDPOINT;
+const matchTheFollowingEndpoint = import.meta.env.VITE_MATCHTHEFOLLOWING_ENDPOINT;
 
 const CreateQuiz = () => {
   const { state } = useLocation();
@@ -16,7 +22,12 @@ const CreateQuiz = () => {
   const [numQuestions, setNumQuestions] = useState("");
   const [description, setDescription] = useState("");
   const { enqueueSnackbar } = useSnackbar();
-  const [categoryDisplayText, setCategoryDisplayText] = useState("Select Category");
+  const [categoryDisplayText, setCategoryDisplayText] =
+    useState("Select Category");
+  const [text, setText] = useState("");
+  const [summary, setSummary] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   const categories = [
     "Multiple Choice Questions",
@@ -25,14 +36,15 @@ const CreateQuiz = () => {
     "Match the following",
   ];
 
+
   const toggleShowCategories = () => {
     setShowCategories(!showCategories);
     if (selectedCategories.length > 0) {
-       setCategoryDisplayText(selectedCategories.join(", "));
+      setCategoryDisplayText(selectedCategories.join(", "));
     } else {
-       setCategoryDisplayText("Select Category");
+      setCategoryDisplayText("Select Category");
     }
-   };
+  };
 
   const handleCategoryChange = (category) => {
     const currentIndex = selectedCategories.indexOf(category);
@@ -50,37 +62,48 @@ const CreateQuiz = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       const quizData = {
-         title,
-         numQuestions,
-         description,
-         categories: selectedCategories,
-         extractedText: state.text
-       };
-       console.log(quizData);
-   
-   
-       const today = new Date();
-       const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-   
- 
-       const customDocId = `${title.replace(/\s+/g, '_')}_${formattedDate}`;
-   
+      const quizData = {
+        title,
+        numQuestions,
+        description,
+        categories: selectedCategories,
+        extractedText: text,
+      };
+      console.log(quizData);
+
+      const [response1, response2] = await Promise.all([
+        axios.post(mcqEndpoint, {summarized_text: summary , unsummarized_text:text}),
+        axios.post(fillInTheBlankEndpoint, {summarized_text: summary}),
+      ]);
   
-       const docRef = doc(db, "quizzes", customDocId);
-       await setDoc(docRef, quizData);
-   
-       console.log("Document written with ID: ", docRef.id);
-    
-       enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
+      console.log('Response 1:', response1);
+      console.log('Response 2:', response2.data);
+  
+
+
+
+      //  const today = new Date();
+      //  const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+
+      //  const customDocId = `${title.replace(/\s+/g, '_')}_${formattedDate}`;
+
+      //  const docRef = doc(db, "quizzes", customDocId);
+      //  await setDoc(docRef, quizData);
+
+      //  console.log("Document written with ID: ", docRef.id);
+
+      enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
     } catch (error) {
-       console.error("Error adding quiz:", error);
-       
+      console.error("Error adding quiz:", error);
     }
-   };
-   
-   
-   
+  };
+
+  useEffect(() => {
+    if (summary) {
+      //  enqueueSnackbar("Summary retrieved successfully!", { variant: "success" });
+       setShowSnackbar(true); // Optionally, if you want to use showSnackbar for additional logic
+    }
+   }, [summary, enqueueSnackbar]);
 
   // console.log(state.text);
 
@@ -199,21 +222,33 @@ const CreateQuiz = () => {
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
           </div>
-          <div className='border-black border-dotted border-2 -mt-3 '>
-            <UploadPDF />
+          <div className="border-black border-dotted border-2 -mt-3 ">
+            <UploadPDF
+              setText={setText}
+              setSummary={setSummary}
+              onLoadingStart={() => setIsLoading(true)}
+              onLoadingEnd={() => {
+                setIsLoading(false);
+                setShowSnackbar(true);
+              }}
+            />
           </div>
         </div>
         <div className="mt-5 grid">
-            <Button
-              className="font-rubik bg-[#4836BE] text-lg w-[90%] justify-self-center"
-              placeholder={undefined}
-              onClick={handleSubmit}
-            >
-              Add Quiz
-            </Button>
-          </div>
+          <Button
+            className="font-rubik bg-[#4836BE] text-lg w-[90%] justify-self-center"
+            placeholder={undefined}
+            onClick={handleSubmit}
+          >
+            Add Quiz
+          </Button>
+        </div>
       </div>
-
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center">
+          <Spinner label="Loading..." color="warning" className="text-red-400" />
+        </div>
+      )}
     </div>
   );
 };
