@@ -1,6 +1,5 @@
 import { Card, CardBody, CardHeader, CardFooter, Button } from "@nextui-org/react"
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../utils/Firebaseconfig";
@@ -11,75 +10,121 @@ import TF from "../modules/optionFormats/TF";
 
 
 function Quiz() {
-  const quiz = {
-    q_id: "1",
-    title: "ABC",
-    score: 75,
-    category: ["FIB", "MCQ", "TF", "MTF"],
-    numQuestions: 10,
-    quizDescription: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique sint repellat quam dolor enim qui",
-    fitb: {
-      keys:["ashfadasf", "qtuqetoqe", "tjhbdgknb"], 
-      sentences: [
-        "Rajasthan is full of desert,  _________ , lakes, dense forest, attractive oases, and temples, etc.",
-        "India is a great country where  _________  but the national language is Hindi.",
-        "In Jammu and Kashmir, u can enjoy boating, skiing, skating, mountaineering,  _________ , fishing, snowfall, etc."
-      ]
-    }
+  const [ currQuiz, setQuiz ] = useState({
+    "categories": ["Category1", "Category2", "..."],
+    "fitb": 
+      {
+        "keys": ["Correct answer 1", "Correct answer 2"],
+        "sentences": ["Fill in the blank sentence 1", "Fill in the blank sentence 2"],
+      },
+    "matchthefollowing": [
+      {
+        "question": "Matching question 1",
+        "lhs": ["Option 1", "Option 2", "..."],
+        "rhs": ["Option A", "Option B", "..."],
+        "answers": [0, 1] // Indexes of correct answers
+      },
+    ],
+    "mcq": [
+      {
+        "question": "Multiple choice question 1",
+        "options": ["Option A", "Option B", "..."],
+        "correct_answer_index": 1 // Index of correct answer in options array
+      },
+    ],
+    "truefalse": [
+      {
+        "sentence": "True or False statement 1",
+        "answer": true // or false
+      },
+    ],
+    "numQuestions": 10,
+    "title": "Quiz Title"
   }
+  )
+  const [ currQuestionIndex, setCurrQuestionIndex ] = useState(0)
+  const [ timerKey, setTimerKey ] = useState(Date.now());
 
-
-
-  const { qid } = useParams()
-  const { Qno } = useParams()
-
-  const [currQuiz, setQuiz] = useState(null)
-
-  const getQuiz = async () => {
-    const docRef = doc(db, "quizzes", "test3_2024-04-20")
-    const result = await getDoc(docRef)
-    const quizData = result.data()
-    setQuiz(quizData)
-  }
-
-
+  const [ questions, setQuestions ] = useState({
+    fitb: [],
+    matchthefollowing: [],
+    truefalse: [],
+    mcq: []
+  })
   
+
+  const getQuizzes = async () => {
+    const quizzesString = localStorage.getItem("quizzes");
+    const quizzesArray = JSON.parse(quizzesString);
+    // console.log(quizzesArray)
+    const docRef = doc(db, "quizzes", quizzesArray[0].id)
+    const result = (await getDoc(docRef)).data()
+    setQuiz(result)
+    // console.log(currQuiz)
+  }
+
   useEffect(() => {
-    getQuiz()
+    getQuizzes()
   }, [])
-  
-  const [ questions, setQuestions ] = useState([])
 
-  if(currQuiz){
-    const numQuestions = currQuiz.numQuestions
-    const fitb = currQuiz.fitb ? currQuiz.fitb : null
-    const mtf = currQuiz.matchthefollowing ? currQuiz.matchthefollowing : null
-    const tf = currQuiz.truefalse ? currQuiz.truefalse : null
-    const mcq = currQuiz.mcq ? currQuiz.mcq : null
-    const categories = currQuiz.categories
-    const noOfQuestionsEach = numQuestions / categories.length
-  }
-
-  const [currQuestionIndex, setCurrQuestionIndex] = useState(0)
-  const [timerKey, setTimerKey] = useState(Date.now());
-  
+  // Timer Coded
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrQuestionIndex((prevIndex) => (prevIndex + 1) % currQuiz.numQuestions)
-      setTimerKey(Date.now())
-    }, 7000)
+    if(currQuiz) {
+      const timer = setTimeout(() => {
+        setCurrQuestionIndex((prevIndex) => (prevIndex + 1) % currQuiz.numQuestions)
+        setTimerKey(Date.now())
+      }, 7000)
+      return () => clearTimeout(timer)
+    }
 
+  }, [currQuestionIndex, currQuiz])
 
-    return () => clearTimeout(timer)
-  }, [currQuestionIndex, quiz.fitb])
+  //randomly select questions
+  useEffect(() => {
+    if(currQuiz) { 
+      const { categories, fitb, matchthefollowing, mcq, numQuestions, title, truefalse } = currQuiz
+      // console.log(categories, fitb, matchthefollowing, mcq, numQuestions, title, truefalse)
+      const numOfCategories = categories.length
+      const numOfQuestionsPerCategory =  Math.floor(numQuestions / numOfCategories)
 
+      const randomlySelectedQuestions = (category, numOfQuestionsToSelect) => {
+        const selectedQuestions = []
+        const availableQuestions = category.slice() 
+        for(let i = 0; i < numOfQuestionsToSelect; i++) {
+          const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+          const selectedQuestion = availableQuestions[randomIndex];
+          selectedQuestions.push(selectedQuestion);
+          availableQuestions.splice(randomIndex, 1);
+        }
+        return selectedQuestions
+      }
 
+      const selectedFITBQuestions = randomlySelectedQuestions(
+        fitb.sentences.map((sentence, index) => ({ sentence, key: fitb.keys[index] })), numOfQuestionsPerCategory)
+      
+      const selectedMTFQuestions = randomlySelectedQuestions(matchthefollowing, numOfQuestionsPerCategory);
+      const selectedTrueFalseQuestions = randomlySelectedQuestions(truefalse, numOfQuestionsPerCategory);
+      const selectedMCQQuestions = randomlySelectedQuestions(mcq, numOfQuestionsPerCategory);
+
+      const allSelectedQuestions = [
+        ...selectedFITBQuestions.map(question => ({ ...question, type: 'FITB' })),
+        ...selectedMTFQuestions.map(question => ({ ...question, type: 'MTF' })),
+        ...selectedTrueFalseQuestions.map(question => ({ ...question, type: 'TrueFalse' })),
+        ...selectedMCQQuestions.map(question => ({ ...question, type: 'MCQ' }))
+      ]
+
+      const shuffledQuestions = allSelectedQuestions.sort(() => Math.random() - 0.5);
+
+      setQuestions(shuffledQuestions)
+      console.log(shuffledQuestions)
+    }
+  }, [currQuiz])
 
   return (
     currQuiz && <div className="h-full flex flex-col justify-between">
     <Card className='h-[95vh] w-[90vw] mt-5 mx-auto'>
         <CardHeader className=''>
-          <h1 className="text-2xl text-center w-full p-1">{quiz.title}</h1>
+          <h1 className="text-2xl text-center w-full p-1">{currQuiz.title}</h1>
         </CardHeader>
         <CardBody className="flex flex-col font-rubik">
         {/* {currQuiz.fitb && 
@@ -109,7 +154,7 @@ function Quiz() {
           currQuiz.matchthefollowing && 
           <div>
             <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
-            <p className="text-xl">{currQuiz.matchthefollowing[currQuestionIndex].lhs.question}</p>
+            <p className="text-xl">{currQuiz.matchthefollowing[currQuestionIndex].question}</p>
             <MTF lhs={currQuiz.matchthefollowing[currQuestionIndex].lhs} rhs={currQuiz.matchthefollowing[currQuestionIndex].rhs}></MTF>
           </div>
         }
@@ -121,8 +166,7 @@ function Quiz() {
             colors={['#004777', '#F7B801', '#A30000', '#A30000']}
             colorsTime={[7, 5, 2, 0]}
             onComplete={() => {
-              console.log(currQuestionIndex)
-              if (currQuestionIndex === quiz.fitb.sentences.length - 1) {
+              if (currQuestionIndex === currQuiz.numQuestions - 1) {
                 console.log("Quiz ended");
               }
             }}

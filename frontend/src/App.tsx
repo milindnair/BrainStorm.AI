@@ -33,8 +33,6 @@ function App() {
     }
   }, []);
 
-  const loc = useLocation();
-  const navClass = "w-1/2 text-center ";
   useEffect(() => {
     const user = localStorage.getItem("name");
     const profilePic = localStorage.getItem("photoURL");
@@ -56,6 +54,7 @@ function App() {
     // Iterate over each quiz ID and fetch its corresponding document
     quizzesArray.forEach(async (element) => {
         try {
+            console.log("hi")
             const docRef = doc(db, "quizzes", element.id);
             const docSnapshot = await getDoc(docRef);
             
