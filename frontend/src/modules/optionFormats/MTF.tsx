@@ -1,8 +1,15 @@
-import React from 'react'
+import { useState } from "react"
 
-function MTF() {
+type Props = {
+  lhs:any
+  rhs:any
+}
+
+function MTF(props: Props) {
   return (
-    <div>MTF</div>
+    <div>
+      
+    </div>
   )
 }
 

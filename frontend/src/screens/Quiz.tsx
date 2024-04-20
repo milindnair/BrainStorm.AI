@@ -105,6 +105,14 @@ function Quiz() {
               <TF></TF>
             </div>
         } */}
+        {
+          currQuiz.matchthefollowing && 
+          <div>
+            <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
+            <p className="text-xl">{currQuiz.matchthefollowing[currQuestionIndex].lhs.question}</p>
+            <MTF lhs={currQuiz.matchthefollowing[currQuestionIndex].lhs} rhs={currQuiz.matchthefollowing[currQuestionIndex].rhs}></MTF>
+          </div>
+        }
         <div className="mx-auto my-auto ">
           <CountdownCircleTimer
             isPlaying={true}
