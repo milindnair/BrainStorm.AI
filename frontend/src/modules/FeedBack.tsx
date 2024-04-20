@@ -1,11 +1,20 @@
-import { Card, CardBody, CardFooter, Divider, Textarea } from "@nextui-org/react"
+import { Card, CardBody, CardFooter, Textarea, Button } from "@nextui-org/react"
 import { db } from "../utils/Firebaseconfig";
 import { addDoc, collection, setDoc,doc} from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 
-function FeedBack() {
 
+function FeedBack({ name }) {
 
+  const handleSubmit = async (text) => {
+    await setDoc(doc(db, "feedback", name), {
+      userId: name,
+      comments: text
+    })
+  } 
+
+  const [comment, setComment] = useState("")
 
   return (
     <div className="w-[96vw] mx-auto p-3">
@@ -16,10 +25,17 @@ function FeedBack() {
                 className="font-rubik"
                 variant="underlined"
                 minRows={2}
-                >
-                </Textarea>
+                value={comment}
+                onChange={(e:any) => {
+                  setComment(comment => e.target.value)
+                }}
+                />
             </CardBody>
+            <CardFooter>
+              <Button>
 
+              </Button>
+            </CardFooter>
         </Card>
     </div>
   )

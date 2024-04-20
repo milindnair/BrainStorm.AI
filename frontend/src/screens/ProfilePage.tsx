@@ -53,7 +53,7 @@ function ProfilePage() {
                 </Button>
             </div> 
 
-            <FeedBack />
+            <FeedBack name={user} />
 
             <Footer />
         </div>
