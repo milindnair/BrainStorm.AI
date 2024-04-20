@@ -32,7 +32,7 @@ app.post("/api/text/upload", upload.single("pdf"), async (req, res) => {
     console.log("Request payload:", { text: formattedText });
 
     const response = await axios.post(
-      process.env.SUMMARIZATION_ENDPOINT,
+      "https://a08e-35-237-8-93.ngrok-free.app/summarizeText",
       { text: formattedText },
       {
         httpsAgent: new https.Agent({

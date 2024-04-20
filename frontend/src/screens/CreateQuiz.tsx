@@ -22,12 +22,12 @@ const CreateQuiz = () => {
   const [numQuestions, setNumQuestions] = useState("");
   const [description, setDescription] = useState("");
   const { enqueueSnackbar } = useSnackbar();
-  const [categoryDisplayText, setCategoryDisplayText] =
-    useState("Select Category");
+  const [categoryDisplayText, setCategoryDisplayText] = useState("Select Category");
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [Finalquestions, setFinalQuestions] = useState({});
 
   const categories = [
     "Multiple Choice Questions",
@@ -62,45 +62,65 @@ const CreateQuiz = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const quizData = {
-        title,
-        numQuestions,
-        description,
-        categories: selectedCategories,
-        extractedText: text,
-      };
-      console.log(quizData);
-
-      const [response1, response2] = await Promise.all([
-        axios.post(mcqEndpoint, {summarized_text: summary , unsummarized_text:text}),
-        axios.post(fillInTheBlankEndpoint, {summarized_text: summary}),
-      ]);
-  
-      console.log('Response 1:', response1);
-      console.log('Response 2:', response2.data);
-  
-
-
-
-      //  const today = new Date();
-      //  const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-
-      //  const customDocId = `${title.replace(/\s+/g, '_')}_${formattedDate}`;
-
-      //  const docRef = doc(db, "quizzes", customDocId);
-      //  await setDoc(docRef, quizData);
-
-      //  console.log("Document written with ID: ", docRef.id);
-
-      enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
+       let quizData = {
+         title,
+         numQuestions,
+         description,
+         categories: selectedCategories,
+         extractedText: text,
+       };
+       console.log(quizData);
+   
+       const [response1, response2, response3, response4] = await Promise.all([
+         axios.post(mcqEndpoint, { summarized_text: summary, unsummarized_text: text }).catch(error => console.error('Error in MCQ request:', error)),
+         axios.post(fillInTheBlankEndpoint, { summarized_text: summary }).catch(error => console.error('Error in Fill in the Blank request:', error)),
+         axios.post(trueOrFalseEndpoint, { text: summary }).catch(error => console.error('Error in True or False request:', error)),
+         axios.post(matchTheFollowingEndpoint, { text: summary }).catch(error => console.error('Error in Match the Following request:', error))
+       ]);
+   
+       console.log('Response 1:', response1.data);
+       console.log('Response 2:', response2.data);
+       console.log('Response 3:', response3.data);
+       console.log('Response 4:', response4.data);
+   
+       let mcqquestions = response1.data;
+       let fitbquestions = response2.data;
+       let truefalsequestions = response3.data;
+       let matchthefollowingquestions = response4.data;
+   
+       quizData = {
+         ...quizData,
+         mcq: mcqquestions,
+         fitb: fitbquestions,
+         truefalse: truefalsequestions,
+         matchthefollowing: matchthefollowingquestions
+       };
+   
+       const today = new Date();
+       const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+   
+       const customDocId = `${title.replace(/\s+/g, '_')}_${formattedDate}`;
+   
+       const docRef = doc(db, "quizzes", customDocId);
+       await setDoc(docRef, quizData);
+   
+       console.log("Document written with ID: ", docRef.id);
+   
+       enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
     } catch (error) {
-      console.error("Error adding quiz:", error);
+       console.error("Error adding quiz:", error);
     }
-  };
+   };
+   
+
+  useEffect(() => {
+    console.log(Finalquestions)
+  },[Finalquestions]);
+  
 
   useEffect(() => {
     if (summary) {
-      //  enqueueSnackbar("Summary retrieved successfully!", { variant: "success" });
+       enqueueSnackbar("Summary retrieved successfully!", { variant: "success" });
        setShowSnackbar(true); // Optionally, if you want to use showSnackbar for additional logic
     }
    }, [summary, enqueueSnackbar]);
