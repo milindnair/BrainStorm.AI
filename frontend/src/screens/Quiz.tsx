@@ -127,31 +127,32 @@ function Quiz() {
           <h1 className="text-2xl text-center w-full p-1">{currQuiz.title}</h1>
         </CardHeader>
         <CardBody className="flex flex-col font-rubik">
-        {/* {currQuiz.fitb && 
+        {
+          questions[currQuestionIndex].type === "FITB" && 
           <div>
             <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
             <p className="text-xl">{currQuiz.fitb.sentences[currQuestionIndex]}</p>
             <FIB></FIB>
           </div>
-        } */}
-        {/* {
-            currQuiz.mcq && 
+        }
+        {
+            questions[currQuestionIndex].type === "MCQ" && 
             <div>
               <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
               <p className="text-xl">{currQuiz.mcq[currQuestionIndex].question}</p>
               <MCQ options={currQuiz.mcq[currQuestionIndex].options}></MCQ>
             </div>
-        } */}
-        {/* {
-            currQuiz.truefalse && 
+        }
+        {
+            questions[currQuestionIndex].type === "TrueFalse" && 
             <div>
               <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
               <p className="text-xl">{currQuiz.truefalse[currQuestionIndex].sentence}</p>
               <TF></TF>
             </div>
-        } */}
+        }
         {
-          currQuiz.matchthefollowing && 
+          questions[currQuestionIndex].type === "MTF" && 
           <div>
             <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
             <p className="text-xl">{currQuiz.matchthefollowing[currQuestionIndex].question}</p>
