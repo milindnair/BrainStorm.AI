@@ -3,16 +3,22 @@ import { db } from "../utils/Firebaseconfig";
 import { addDoc, collection, setDoc,doc} from "firebase/firestore";
 import { useEffect, useState } from "react";
 
+type Props = {
+  name : string
+}
 
+function FeedBack(props: Props) {
 
-function FeedBack({ name }) {
-
-  const handleSubmit = async (text) => {
-    await setDoc(doc(db, "feedback", name), {
-      userId: name,
-      comments: text
-    })
+  const handleSubmit = async (text:string) => {
+    if(props.name) {
+      await setDoc(doc(db, "feedback", props.name), {
+        userId: props.name,
+        comments: text
+      })
+    }
   } 
+
+
 
   const [comment, setComment] = useState("")
 
@@ -23,8 +29,11 @@ function FeedBack({ name }) {
                 <Textarea
                 label="Feedback"
                 className="font-rubik"
+                classNames={{
+                  label: "text-xl"
+                }}
                 variant="underlined"
-                minRows={2}
+                minRows={0}
                 value={comment}
                 onChange={(e:any) => {
                   setComment(comment => e.target.value)
@@ -32,8 +41,8 @@ function FeedBack({ name }) {
                 />
             </CardBody>
             <CardFooter>
-              <Button>
-
+              <Button onClick={() => {handleSubmit(comment)}}>
+                Submit Feedback
               </Button>
             </CardFooter>
         </Card>

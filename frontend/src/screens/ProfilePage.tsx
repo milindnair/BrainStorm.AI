@@ -8,6 +8,7 @@ import "../modules/Footer.css"
 import { auth } from "../utils/Firebaseconfig"
 import { signOut } from "firebase/auth"
 import { useNavigate } from "react-router-dom"
+import ContactUs from "../modules/ContactUs"
 
 function ProfilePage() {
     const [user, setUser] = useState("")
@@ -54,6 +55,8 @@ function ProfilePage() {
             </div> 
 
             <FeedBack name={user} />
+
+            <ContactUs />
 
             <Footer />
         </div>
