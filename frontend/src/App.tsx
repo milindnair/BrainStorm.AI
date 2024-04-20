@@ -12,7 +12,7 @@ import Title from "./components/Title";
 import { Link, useLocation } from "react-router-dom";
 import QuizCard from "./components/QuizCard";
 
-import { getDocs, query, collection } from "firebase/firestore";
+import { getDocs, query, collection, where, getDoc, doc } from "firebase/firestore";
 import { db } from "./utils/Firebaseconfig";
 
 // import PdfTextExtractor from './components/PdfTextExtractor'
@@ -47,13 +47,35 @@ function App() {
   }, []);
 
   const getQuestions = async () => {
-    const q = query(collection(db, "quizzes"));
-    const querySnapshot = await getDocs(q);
-    console.log("All Quizzes:");
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
+    // Access the quizzes array from localStorage
+    const quizzesString = localStorage.getItem("quizzes");
+    const quizzesArray = JSON.parse(quizzesString);
+
+    console.log("Quizzes array:", quizzesArray);
+
+    // Iterate over each quiz ID and fetch its corresponding document
+    quizzesArray.forEach(async (element) => {
+        try {
+            const docRef = doc(db, "quizzes", element.id);
+            const docSnapshot = await getDoc(docRef);
+            
+            if (docSnapshot.exists()) {
+              const quizData = docSnapshot.data();
+              // Omit the extractedText field
+              const { extractedText, ...quizWithoutExtractedText } = quizData;
+              // Add the quiz object to localStorage
+              localStorage.setItem(`${element.id}`, JSON.stringify(quizWithoutExtractedText));
+              console.log("Quiz document added to localStorage:", element.id);
+            } else {
+                console.log("Quiz document with ID", element.id, "does not exist");
+            }
+        } catch (error) {
+            console.error("Error fetching quiz document:", error);
+        }
     });
-  };
+};
+
+  
 
   const attemptedQuizzes = [
     {

@@ -31,6 +31,7 @@ function ProfilePage() {
         signOut(auth)
         .then(() => {
             console.log("User signed out");
+            localStorage.clear()
             navigate("/login")
         })
         .catch((error:any) => {

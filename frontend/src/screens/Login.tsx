@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/card";
 import { Button } from "@nextui-org/button";
@@ -31,8 +29,9 @@ export default function Login() {
       await setPersistence(auth, browserSessionPersistence);
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
+    
       await createUser(user);
-      await localStorageHandler({email: user.email,name: user.displayName,photoURL: user.photoURL,uid: user.uid });
+      await localStorageHandler({email: user.email,name: user.displayName,photoURL: user.photoURL,uid: user.uid});
       enqueueSnackbar('Login SuccessFull!', { variant: 'success' });
       navigate('/home');
 

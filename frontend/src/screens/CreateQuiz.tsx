@@ -93,7 +93,8 @@ const CreateQuiz = () => {
          mcq: mcqquestions,
          fitb: fitbquestions,
          truefalse: truefalsequestions,
-         matchthefollowing: matchthefollowingquestions
+         matchthefollowing: matchthefollowingquestions,
+         
        };
    
        const today = new Date();
