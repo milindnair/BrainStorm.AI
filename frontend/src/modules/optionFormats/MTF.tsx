@@ -1,33 +1,50 @@
-
+import { useEffect, useState } from "react";
 
 type Props = {
   lhs:any
   rhs:any
+  onAnswer: (responses: (number | null)[]) => void
 }
 
 function MTF(props: Props) {
+  const [selectedOptions, setSelectedOptions] = useState(new Array(props.lhs.length).fill(null));
+
+  const handleOptionSelect = (index, value) => {
+    const updatedSelectedOptions = [...selectedOptions];
+    updatedSelectedOptions[index] = value;
+    setSelectedOptions(updatedSelectedOptions);
+    props.onAnswer(updatedSelectedOptions);
+  };
+
+  // useEffect(() => {
+  //   console.log(selectedOptions)
+  // }, [selectedOptions])
+
+
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {/* Render options for left-hand side (lhs) */}
-      <div>
-        <h3 className="text-sm font-semibold mb-2">Left Hand Side (LHS)</h3>
-        {props.lhs.map((option, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <span className="font-semibold mr-2">{index + 1}.</span>
-            <span>{option}</span>
+    <div className="max-w-md mx-auto p-4 border border-gray-300 rounded-md shadow-md">
+      <div className="flex flex-wrap gap-4">
+        {/* Render lhs options */}
+        {props.lhs.map((lhsOption, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <span className="font-semibold">{lhsOption}</span>
+            <select
+              className="border border-gray-300 rounded-md p-2"
+              value={selectedOptions[index]}
+              onChange={(e) => handleOptionSelect(index, parseInt(e.target.value))}
+            >
+              <option>---</option>
+              {/* Render rhs options */}
+              {props.rhs.map((rhsOption, rhsIndex) => (
+                <option key={rhsIndex} value={rhsIndex}>
+                  {rhsOption}
+                </option>
+              ))}
+            </select>
           </div>
         ))}
       </div>
-      {/* Render options for right-hand side (rhs) */}
-      <div>
-        <h3 className="text-sm font-semibold mb-2">Right Hand Side (RHS)</h3>
-        {props.rhs.map((option, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <span className="font-semibold mr-2">{String.fromCharCode(65 + index)}.</span>
-            <span>{option}</span>
-          </div>
-        ))}
-      </div>
+
     </div>
   )
 }

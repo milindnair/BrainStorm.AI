@@ -1,11 +1,12 @@
 import { useState } from 'react'
 
-function TF() {
+type Props = {
+  onAnswer: (response: string) => void; // Define the prop type
+}
+
+function TF(props: Props) {
   const [ selectedOption, setSelectedOption ] = useState("")
 
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
   return (
     <div>
       <form className="flex flex-col text-xl">
@@ -15,7 +16,10 @@ function TF() {
             name="option"
             value="true"
             checked={selectedOption === 'true'}
-            onChange={handleOptionChange}
+            onChange={(e) => {
+              setSelectedOption(e.target.value)
+              props.onAnswer(e.target.value)
+            }}
           />
           True
         </label>
@@ -25,7 +29,10 @@ function TF() {
             name="option"
             value="false"
             checked={selectedOption === 'false'}
-            onChange={handleOptionChange}
+            onChange={(e) => {
+              setSelectedOption(e.target.value)
+              props.onAnswer(e.target.value)
+            }}
           />
           False
         </label>

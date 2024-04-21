@@ -4,14 +4,12 @@ import { useState } from "react";
 
 type Props = {
   options: string[]
+  onAnswer: (response: string) => void
 }
 
 function MCQ(props: Props) {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
 
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
 
   return (
     <div>
@@ -23,7 +21,10 @@ function MCQ(props: Props) {
               name="option"
               value={option}
               checked={selectedOption === option}
-              onChange={handleOptionChange}
+              onChange={(e) => {
+                setSelectedOption(e.target.value)
+                props.onAnswer(e.target.value)
+              }}
             />
             {option}
           </label>
