@@ -3,7 +3,14 @@ import Title from "../components/Title";
 import { Button, Checkbox, Input } from "@material-tailwind/react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { addDoc, collection, setDoc, doc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  setDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { db } from "../utils/Firebaseconfig";
 import { useSnackbar } from "notistack";
 import UploadPDF from "../components/UploadPDF";
@@ -12,7 +19,8 @@ import { Spinner } from "@nextui-org/react";
 const mcqEndpoint = import.meta.env.VITE_MCQ_ENDPOINT;
 const trueOrFalseEndpoint = import.meta.env.VITE_TRUEORFALSE_ENDPOINT;
 const fillInTheBlankEndpoint = import.meta.env.VITE_FILLINTHEBLANK_ENDPOINT;
-const matchTheFollowingEndpoint = import.meta.env.VITE_MATCHTHEFOLLOWING_ENDPOINT;
+const matchTheFollowingEndpoint = import.meta.env
+  .VITE_MATCHTHEFOLLOWING_ENDPOINT;
 
 const CreateQuiz = () => {
   const { state } = useLocation();
@@ -22,7 +30,8 @@ const CreateQuiz = () => {
   const [numQuestions, setNumQuestions] = useState("");
   const [description, setDescription] = useState("");
   const { enqueueSnackbar } = useSnackbar();
-  const [categoryDisplayText, setCategoryDisplayText] = useState("Select Category");
+  const [categoryDisplayText, setCategoryDisplayText] =
+    useState("Select Category");
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +44,6 @@ const CreateQuiz = () => {
     "Fill in the blanks",
     "Match the following",
   ];
-
 
   const toggleShowCategories = () => {
     setShowCategories(!showCategories);
@@ -62,71 +70,112 @@ const CreateQuiz = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       let quizData = {
-         title,
-         numQuestions,
-         description,
-         categories: selectedCategories,
-         extractedText: text,
-       };
-       console.log(quizData);
-   
-       const [response1, response2, response3, response4] = await Promise.all([
-         axios.post(mcqEndpoint, { summarized_text: summary, unsummarized_text: text }).catch(error => console.error('Error in MCQ request:', error)),
-         axios.post(fillInTheBlankEndpoint, { summarized_text: summary }).catch(error => console.error('Error in Fill in the Blank request:', error)),
-         axios.post(trueOrFalseEndpoint, { text: summary }).catch(error => console.error('Error in True or False request:', error)),
-         axios.post(matchTheFollowingEndpoint, { text: summary }).catch(error => console.error('Error in Match the Following request:', error))
-       ]);
-   
-       console.log('Response 1:', response1.data);
-       console.log('Response 2:', response2.data);
-       console.log('Response 3:', response3.data);
-       console.log('Response 4:', response4.data);
-   
-       let mcqquestions = response1.data;
-       let fitbquestions = response2.data;
-       let truefalsequestions = response3.data;
-       let matchthefollowingquestions = response4.data;
-   
-       quizData = {
-         ...quizData,
-         mcq: mcqquestions,
-         fitb: fitbquestions,
-         truefalse: truefalsequestions,
-         matchthefollowing: matchthefollowingquestions,
-         
-       };
-   
-       const today = new Date();
-       const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-   
-       const customDocId = `${title.replace(/\s+/g, '_')}_${formattedDate}`;
-   
-       const docRef = doc(db, "quizzes", customDocId);
-       await setDoc(docRef, quizData);
-   
-       console.log("Document written with ID: ", docRef.id);
-   
-       enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
+      let quizData = {
+        title,
+        numQuestions,
+        description,
+        categories: selectedCategories,
+        extractedText: text,
+      };
+      console.log(quizData);
+
+      const [response1, response2, response3, response4] = await Promise.all([
+        axios
+          .post(mcqEndpoint, {
+            summarized_text: summary,
+            unsummarized_text: text,
+          })
+          .catch((error) => console.error("Error in MCQ request:", error)),
+        axios
+          .post(fillInTheBlankEndpoint, { summarized_text: summary })
+          .catch((error) =>
+            console.error("Error in Fill in the Blank request:", error)
+          ),
+        axios
+          .post(trueOrFalseEndpoint, { text: summary })
+          .catch((error) =>
+            console.error("Error in True or False request:", error)
+          ),
+        axios
+          .post(matchTheFollowingEndpoint, { text: summary })
+          .catch((error) =>
+            console.error("Error in Match the Following request:", error)
+          ),
+      ]);
+
+      console.log("Response 1:", response1.data);
+      console.log("Response 2:", response2.data);
+      console.log("Response 3:", response3.data);
+      console.log("Response 4:", response4.data);
+
+      let mcqquestions = response1.data;
+      let fitbquestions = response2.data;
+      let truefalsequestions = response3.data;
+      let matchthefollowingquestions = response4.data;
+
+      quizData = {
+        ...quizData,
+        mcq: mcqquestions,
+        fitb: fitbquestions,
+        truefalse: truefalsequestions,
+        matchthefollowing: matchthefollowingquestions,
+      };
+
+      const today = new Date();
+      const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
+
+      const customDocId = `${title.replace(/\s+/g, "_")}_${formattedDate}`;
+
+      const docRef = doc(db, "quizzes", customDocId);
+      await setDoc(docRef, quizData);
+
+      console.log("Document written with ID: ", docRef.id);
+
+      let userId = localStorage.getItem("uid");
+      
+      if (!userId) {
+        throw new Error("User ID not found in local storage");
+      }
+      userId = userId.replace(/"/g, "");
+  
+      const userDocRef = doc(db, "users", userId);
+
+
+      const newQuiz = {
+        id: customDocId,
+        status: "generated", 
+      };
+
+
+      await setDoc(
+        userDocRef,
+        { quizzes: arrayUnion(newQuiz) },
+        { merge: true }
+      );
+      console.log("User document updated with new quiz");
+
+      enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
     } catch (error) {
-       console.error("Error adding quiz:", error);
+      console.error("Error adding quiz:", error);
     }
-   };
-   
+  };
 
   useEffect(() => {
-    console.log(Finalquestions)
-  },[Finalquestions]);
-  
+    console.log(Finalquestions);
+  }, [Finalquestions]);
 
   useEffect(() => {
     if (summary) {
-       enqueueSnackbar("Summary retrieved successfully!", { variant: "success" });
-       setShowSnackbar(true); // Optionally, if you want to use showSnackbar for additional logic
+      enqueueSnackbar("Summary retrieved successfully!", {
+        variant: "success",
+      });
+      setShowSnackbar(true); 
     }
-   }, [summary, enqueueSnackbar]);
+  }, [summary, enqueueSnackbar]);
 
-  // console.log(state.text);
+
 
   return (
     <div className="h-full flex flex-col justify-between">
@@ -267,7 +316,11 @@ const CreateQuiz = () => {
       </div>
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center">
-          <Spinner label="Loading..." color="warning" className="text-red-400" />
+          <Spinner
+            label="Loading..."
+            color="warning"
+            className="text-red-400"
+          />
         </div>
       )}
     </div>

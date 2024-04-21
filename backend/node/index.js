@@ -27,12 +27,12 @@ app.post("/api/text/upload", upload.single("pdf"), async (req, res) => {
   try {
     const pdfBuffer = req.file.buffer;
     const pdfText = await extractTextFromPDF(pdfBuffer);
-    const formattedText = pdfText.replace(/\n/g, "");
+    const formattedText = pdfText.replace(/\n/g, " ");
     console.log("Extracted text:", formattedText);
     console.log("Request payload:", { text: formattedText });
 
     const response = await axios.post(
-      "https://a08e-35-237-8-93.ngrok-free.app/summarizeText",
+      "https://c674-34-172-123-254.ngrok-free.app/summarizeText",
       { text: formattedText },
       {
         httpsAgent: new https.Agent({
@@ -74,19 +74,20 @@ app.post("/chat", async (req, res) => {
 
     // // Adjust the prompt to instruct GPT-3 to generate "Match the Following" questions
     const gptPrompt = `
-      Generate 4 "Match the Following" type questions based on the following summary: ${text}
-      
-      Here's an example of the desired format:
-      
-      {
-        "question": "Match the following statements from Elon Musk with their impact on the cryptocurrency market:",
-        "lhs": ["Statement 1", "Statement 2"],
-        "rhs": ["Impact A", "Impact B", "Impact C"],
-        "answers": [1, 2]
-      }
-      
-      Please generate 4 similar objects, each with a main question, statements for the left-hand side (lhs) to be matched, options for the right-hand side (rhs), and the indices of correct answers for the lhs questions.And wrap the everything inside one array
+    Generate 4 "Match the Following" type questions based on the following summary: ${text}
+    
+    Here's an example of the desired format:
+    
+    {
+      "question": "Match the following statements from Elon Musk with their impact on the cryptocurrency market:",
+      "lhs": ["Statement 1", "Statement 2", "Statement 3"],
+      "rhs": ["Impact A", "Impact B", "Impact C"],
+      "answers": [1, 2, 0]
+    }
+    
+    Please generate 4 similar objects. Each should have a question, 3 statements for the left-hand side (lhs) to be matched, and 3 options for the right-hand side (rhs), all relevant and accurate. Ensure that each answer index corresponds correctly to the options provided.Each lhs should have a unique correct match in rhs.Wrap everything inside an array.
     `;
+    
 
     const response = await axios.post(
       "https://api.openai.com/v1/engines/gpt-3.5-turbo-instruct/completions",
@@ -104,9 +105,10 @@ app.post("/chat", async (req, res) => {
 
     const completion = response.data;
     const generatedText = completion.choices[0].text;
-    console.log(generatedText);
-    const arrayOfObjects = JSON.parse(generatedText)
-    console.log(typeof(generatedText));
+
+    console.log("Generated Text: ", generatedText);
+    const arrayOfObjects = JSON.parse( generatedText);
+    console.log(typeof( generatedText));
     console.log(arrayOfObjects);
     res.json(arrayOfObjects);
 
