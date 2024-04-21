@@ -62,6 +62,7 @@ function Quiz() {
     new Array(questions.length).fill(0) || null
   );
   const [score, setScore] = useState(0);
+  const [actualAnswers, setActualAnswers] = useState()
 
   useEffect(() => {
     const quiz = location.state.quiz;
@@ -164,6 +165,28 @@ function Quiz() {
       );
       // set state variable
       setQuestions(shuffledQuestions);
+      const updatedActualAnswers = [...actualAnswers]
+      shuffledQuestions.forEach((question, index) => {
+        if(question.type === "FITB") {
+          updatedActualAnswers.push(
+            question.key
+          )
+        } else if(question.type === "MCQ") {
+          updatedActualAnswers.push(
+            question.options[question.correct_answer_index]
+          )
+        } else if(question.type === "TrueFalse") {
+          updatedActualAnswers.push(
+            question.answer
+          )
+        } else if(question.type === "MTF"){
+          updatedActualAnswers.push(
+            question.answers
+          )
+        }
+      }) 
+      setActualAnswers(updatedActualAnswers)
+      console.log(actualAnswers)
       console.log(shuffledQuestions);
     }
   }, [currQuiz]);
