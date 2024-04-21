@@ -119,6 +119,7 @@ const CreateQuiz = () => {
         fitb: fitbquestions,
         truefalse: truefalsequestions,
         matchthefollowing: matchthefollowingquestions,
+        score: 0, 
       };
 
       const today = new Date();
