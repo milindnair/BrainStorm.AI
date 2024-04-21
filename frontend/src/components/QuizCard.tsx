@@ -58,7 +58,7 @@ function QuizCard(props: Props) {
             </div>
           )}
         </CardHeader>
-        <CardBody className="h-[vh] flex flex-row justify-between">
+        <CardBody className="h-[vh] flex flex-row justify-between ">
           {quizData && (
             <div className="flex flex-col">
               <p className="">{quizData.description}</p>
@@ -70,7 +70,7 @@ function QuizCard(props: Props) {
             className={
               loc.pathname.includes("generated")
                 ? "hidden"
-                : "w-[40%] grid justify-items-center items-start"
+                : "w-[40%] grid justify-items-end items-start"
             }
           >
             <CircularProgress

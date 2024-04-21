@@ -46,35 +46,34 @@ function App() {
   }, []);
 
   const getQuestions = async () => {
- 
     const quizzesString = localStorage.getItem("quizzes");
     const quizzesArray = JSON.parse(quizzesString);
-
+   
     console.log("Quizzes array:", quizzesArray);
-
-
+   
     quizzesArray.forEach(async (element) => {
       try {
         console.log("hi");
-        const docRef = doc(db, "quizzes", element.id);
-        const docSnapshot = await getDoc(docRef);
-
-        if (docSnapshot.exists()) {
-          const quizData = docSnapshot.data();
-          const { extractedText, ...quizWithoutExtractedText } = quizData;
-          localStorage.setItem(
-            `${element.id}`,
-            JSON.stringify(quizWithoutExtractedText)
-          );
-          console.log("Quiz document added to localStorage:", element.id);
-        } else {
-          console.log("Quiz document with ID", element.id, "does not exist");
-        }
-      } catch (error) {
-        console.error("Error fetching quiz document:", error);
-      }
+         const docRef = doc(db, "quizzes", element.id);
+         const docSnapshot = await getDoc(docRef);
+   
+         if (docSnapshot.exists()) {
+           const quizData = docSnapshot.data();
+           const { extractedText, ...quizWithoutExtractedText } = quizData;
+           localStorage.setItem(
+             `${element.id}`,
+             JSON.stringify(quizWithoutExtractedText)
+           );
+           console.log("Quiz document added to localStorage:", element.id);
+         } else {
+           console.log("Quiz document with ID", element.id, "does not exist");
+         }
+       } catch (error) {
+         console.error("Error fetching quiz document:", error);
+       }
     });
-  };
+   };
+   
 
   const quizzes = [
     {
@@ -98,7 +97,7 @@ function App() {
       <div>{/* <BarChart /> */}</div>
       {/* <PdfTextExtractor /> */}
       <div className="w-[90%] mx-auto flex flex-col">
-      <Tabs
+        <Tabs
           aria-label="Options"
           classNames={{
             tabList: "w-full mt-4 ",
@@ -117,9 +116,17 @@ function App() {
                 msOverflowStyle: "none",
               }}
             >
-              {quizzes.filter(quiz => quiz.status === "attempted").map((quiz, index) => (
-                <QuizCard quiz={quiz} key={index} />
-              ))}
+              {quizzes.filter((quiz) => quiz.status === "attempted").length >
+              0 ? (
+                quizzes
+                  .filter((quiz) => quiz.status === "attempted")
+                  .map((quiz, index) => <QuizCard quiz={quiz} key={index} />)
+              ) : (
+                <div className="text-center py-4">
+                  <p>No quizzes have been attempted yet.</p>
+                  <p>Attempt a quiz to get started!</p>
+                </div>
+              )}
             </div>
           </Tab>
 
@@ -134,9 +141,17 @@ function App() {
                 msOverflowStyle: "none",
               }}
             >
-              {quizzes.filter(quiz => quiz.status === "generated").map((quiz, index) => (
-                <QuizCard quiz={quiz} key={index} />
-              ))}
+              {quizzes.filter((quiz) => quiz.status === "generated").length >
+              0 ? (
+                quizzes
+                  .filter((quiz) => quiz.status === "generated")
+                  .map((quiz, index) => <QuizCard quiz={quiz} key={index} />)
+              ) : (
+                <div className="text-center py-4">
+                  <p>No quizzes have been generated yet.</p>
+                  <p>Generate a quiz to get started!</p>
+                </div>
+              )}
             </div>
           </Tab>
         </Tabs>
