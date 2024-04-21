@@ -22,7 +22,10 @@ function QuizCard(props: Props) {
   useEffect(() => {
     console.log("QuizCard props:", props);
     let data = localStorage.getItem(props.quiz.id);
-    setQuizData(JSON.parse(data));
+    if(data) {
+      setQuizData(JSON.parse(data));
+    }
+    console.log("QuizData: ", quizData);
   }, []);
 
   useEffect(() => {

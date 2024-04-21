@@ -62,7 +62,7 @@ function Quiz() {
     new Array(questions.length).fill(0) || null
   );
   const [score, setScore] = useState(0);
-  const [actualAnswers, setActualAnswers] = useState()
+  const [actualAnswers, setActualAnswers] = useState([])
 
   useEffect(() => {
     const quiz = location.state.quiz;
@@ -163,33 +163,41 @@ function Quiz() {
       const shuffledQuestions = allSelectedQuestions.sort(
         () => Math.random() - 0.5
       );
+      const answers = [];
+      // Loop through shuffledQuestions to extract and store answers
+      shuffledQuestions.forEach((question) => {
+        // Extract answer based on question types
+        let answer;
+        switch (question.type) {
+          case "FITB":
+            answer = question.key;
+            break;
+          case "MCQ":
+            answer = Array(question.options)[0][question.correct_answer_index];
+            break;
+          case "TrueFalse":
+            answer = question.answer;
+            break;
+          case "MTF":
+            answer = question.answers;
+            break;
+          default:
+            answer = null; // Handle other types if needed
+        }
+      
+        // Push the answer to the answers array
+        answers.push(answer);
+      });
+    
+      // Set the state variable to store all the answers
+      setActualAnswers(answers);
+      console.log(answers)
       // set state variable
       setQuestions(shuffledQuestions);
-      const updatedActualAnswers = [...actualAnswers]
-      shuffledQuestions.forEach((question, index) => {
-        if(question.type === "FITB") {
-          updatedActualAnswers.push(
-            question.key
-          )
-        } else if(question.type === "MCQ") {
-          updatedActualAnswers.push(
-            question.options[question.correct_answer_index]
-          )
-        } else if(question.type === "TrueFalse") {
-          updatedActualAnswers.push(
-            question.answer
-          )
-        } else if(question.type === "MTF"){
-          updatedActualAnswers.push(
-            question.answers
-          )
-        }
-      }) 
-      setActualAnswers(updatedActualAnswers)
-      console.log(actualAnswers)
       console.log(shuffledQuestions);
     }
   }, [currQuiz]);
+
 
   // handle users answers
   const handleUserInput = (response) => {
