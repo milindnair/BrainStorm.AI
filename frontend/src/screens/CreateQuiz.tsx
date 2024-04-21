@@ -42,7 +42,7 @@ const CreateQuiz = () => {
     "Multiple Choice Questions",
     "True or False",
     "Fill in the blanks",
-    "Match the following",
+    // "Match the following",
   ];
 
   const toggleShowCategories = () => {
@@ -79,7 +79,7 @@ const CreateQuiz = () => {
       };
       console.log(quizData);
 
-      const [response1, response2, response3, response4] = await Promise.all([
+      const [response1, response2, response3] = await Promise.all([
         axios
           .post(mcqEndpoint, {
             summarized_text: summary,
@@ -96,29 +96,29 @@ const CreateQuiz = () => {
           .catch((error) =>
             console.error("Error in True or False request:", error)
           ),
-        axios
-          .post(matchTheFollowingEndpoint, { text: summary })
-          .catch((error) =>
-            console.error("Error in Match the Following request:", error)
-          ),
+        // axios
+        //   .post(matchTheFollowingEndpoint, { text: summary })
+        //   .catch((error) =>
+        //     console.error("Error in Match the Following request:", error)
+        //   ),
       ]);
 
       console.log("Response 1:", response1.data);
       console.log("Response 2:", response2.data);
       console.log("Response 3:", response3.data);
-      console.log("Response 4:", response4.data);
+      // console.log("Response 4:", response4.data);
 
       let mcqquestions = response1.data;
       let fitbquestions = response2.data;
       let truefalsequestions = response3.data;
-      let matchthefollowingquestions = response4.data;
+      // let matchthefollowingquestions = response4.data;
 
       quizData = {
         ...quizData,
         mcq: mcqquestions,
         fitb: fitbquestions,
         truefalse: truefalsequestions,
-        matchthefollowing: matchthefollowingquestions,
+        // matchthefollowing: matchthefollowingquestions,
         score: 0, 
       };
 

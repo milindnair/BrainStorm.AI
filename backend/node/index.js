@@ -32,7 +32,7 @@ app.post("/api/text/upload", upload.single("pdf"), async (req, res) => {
     console.log("Request payload:", { text: formattedText });
 
     const response = await axios.post(
-      "https://c674-34-172-123-254.ngrok-free.app/summarizeText",
+      "https://4df9-35-227-161-193.ngrok-free.app/summarizeText",
       { text: formattedText },
       {
         httpsAgent: new https.Agent({
@@ -42,6 +42,8 @@ app.post("/api/text/upload", upload.single("pdf"), async (req, res) => {
     );
 
     const summary = response.data;
+
+    req.app.locals.summary = summary;
 
     console.log("summary", summary);
 
@@ -120,6 +122,55 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+
+app.post('/explanation', async (req, res) => {
+  try {
+     const { question, answer } = req.body;
+     const summary = req.app.locals.summary; // Access the global summary variable
+ 
+     // Refactored prompt to be more concise and include the question, correct answer, and summary
+     const gptPrompt = `
+     Given the following question, correct answer, and summary, generate an explanation in 2-3 sentences:
+
+     Question: ${question}
+     Correct Answer: ${answer}
+     Summary: ${summary}
+
+     Explanation:
+     
+     `;
+
+      const response = await axios.post(
+        "https://api.openai.com/v1/engines/gpt-3.5-turbo-instruct/completions",
+        { prompt: gptPrompt, max_tokens: 1024 },
+        {
+          headers: {
+            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          httpsAgent: new https.Agent({
+            rejectUnauthorized: false,
+          }),
+        }
+      );
+
+      const completion = response.data;
+      const generatedText = completion.choices[0].text;
+
+      console.log("Generated Text: ", generatedText);
+
+      res.json({ explanation: generatedText });
+ 
+     // Existing code to make the GPT-3 API call and send the response...
+  } catch (error) {
+     console.error('An error occurred during the request:', error);
+     res.status(500).json({
+       error: "An error occurred during the GPT-3 API request.",
+     });
+  }
+ });
+
+ 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

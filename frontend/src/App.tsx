@@ -77,13 +77,14 @@ function App() {
 
   const quizzes = [
     {
-      id: "test3_2024-04-20",
+      id: "ANIMAL2_2024-04-22",
       status: "generated",
     },
     {
       status: "generated",
       id: "Animal_2024-04-21",
     },
+
   ];
 
   return (

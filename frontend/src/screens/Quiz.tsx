@@ -29,14 +29,14 @@ function Quiz() {
         "Fill in the blank sentence 2",
       ],
     },
-    matchthefollowing: [
-      {
-        question: "Matching question 1",
-        lhs: ["Option 1", "Option 2", "..."],
-        rhs: ["Option A", "Option B", "..."],
-        answers: [0, 1], 
-      },
-    ],
+    // matchthefollowing: [
+    //   {
+    //     question: "Matching question 1",
+    //     lhs: ["Option 1", "Option 2", "..."],
+    //     rhs: ["Option A", "Option B", "..."],
+    //     answers: [0, 1], 
+    //   },
+    // ],
     mcq: [
       {
         question: "Multiple choice question 1",
@@ -77,11 +77,11 @@ function Quiz() {
        const timer = setTimeout(() => {
          setCurrQuestionIndex((prevIndex) => (prevIndex + 1));
          setTimerKey(Date.now());
-       }, 2000);
+       }, 15000);
        console.log(currQuestionIndex);
        return () => clearTimeout(timer);
     } else  {
-       navigate(`/result/${currQuiz.title}`, { state: { quiz: questions, score , correctAnswerIndexes } });
+       navigate(`/result/${currQuiz.title}`, { state: { questions, score , correctAnswerIndexes,actualAnswers,userAnswers } });
     }
    }, [currQuestionIndex, questions, userAnswers, navigate, currQuiz]);
    
@@ -93,7 +93,7 @@ function Quiz() {
       const {
         categories,
         fitb,
-        matchthefollowing,
+        // matchthefollowing,
         mcq,
         numQuestions,
         title,
@@ -128,10 +128,10 @@ function Quiz() {
         numOfQuestionsPerCategory
       );
 
-      const selectedMTFQuestions = randomlySelectedQuestions(
-        matchthefollowing,
-        numOfQuestionsPerCategory
-      );
+      // const selectedMTFQuestions = randomlySelectedQuestions(
+      //   matchthefollowing,
+      //   numOfQuestionsPerCategory
+      // );
       const selectedTrueFalseQuestions = randomlySelectedQuestions(
         truefalse,
         numOfQuestionsPerCategory
@@ -146,10 +146,10 @@ function Quiz() {
           ...question,
           type: "FITB",
         })),
-        ...selectedMTFQuestions.map((question) => ({
-          ...question,
-          type: "MTF",
-        })),
+        // ...selectedMTFQuestions.map((question) => ({
+        //   ...question,
+        //   type: "MTF",
+        // })),
         ...selectedTrueFalseQuestions.map((question) => ({
           ...question,
           type: "TrueFalse",
@@ -163,9 +163,7 @@ function Quiz() {
       const shuffledQuestions = allSelectedQuestions.sort(
         () => Math.random() - 0.5
       );
-      const answers = [];
-      // Loop through shuffledQuestions to extract and store answers
-      shuffledQuestions.forEach((question) => {
+      const answers = shuffledQuestions.map((question) => {
         // Extract answer based on question types
         let answer;
         switch (question.type) {
@@ -173,20 +171,18 @@ function Quiz() {
             answer = question.key;
             break;
           case "MCQ":
-            answer = Array(question.options)[0][question.correct_answer_index];
+            answer = question.options?.[question.correct_answer_index] ?? null;
             break;
           case "TrueFalse":
             answer = question.answer;
             break;
-          case "MTF":
-            answer = question.answers;
-            break;
+          // case "MTF":
+          //   answer = question.answers;
+          //   break;
           default:
             answer = null; // Handle other types if needed
         }
-      
-        // Push the answer to the answers array
-        answers.push(answer);
+        return answer;
       });
     
       // Set the state variable to store all the answers
@@ -212,24 +208,33 @@ function Quiz() {
 
     userAnswers.forEach((answer, index) => {
       if (questions[index].type === "FITB" && answer === questions[index].key) {
+        console.log("Correct Answer: ",questions[index].key);
+        console.log("User answer: ", answer);
         updatedCorrectAnswerIndexes[index] = 1; 
       } else if (
-        questions[index].type === "MCQ" &&
-        answer ===
+        questions[index].type == "MCQ" &&
+        answer ==
           questions[index].options[questions[index].correct_answer_index]
       ) {
+        console.log("Correct Answer: ",questions[index].options[questions[index].correct_answer_index]);
+        console.log("User answer: ", answer);
         updatedCorrectAnswerIndexes[index] = 1;
       } else if (
-        questions[index].type === "TrueFalse" &&
-        answer === questions[index].answer
+        questions[index].type == "TrueFalse" &&
+        answer == questions[index].answer
       ) {
+        console.log("Correct Answer: ",questions[index].answer);
+        console.log("User answer: ", answer);
         updatedCorrectAnswerIndexes[index] = 1;
-      } else if (
-        questions[index].type === "MTF" &&
-        answer.every((ele, i) => ele === questions[index].answers[i] - 1)
-      ) {
-        updatedCorrectAnswerIndexes[index] = 1;
-      } else {
+      }
+      //  else if (
+      //   questions[index].type === "MTF" &&
+      //   answer.every((ele, i) => ele === questions[index].answers[i] - 1)
+      // ) {
+      //   console.log("Correct Answer: ",questions[index].answers);
+      //   updatedCorrectAnswerIndexes[index] = 1;
+      // } 
+      else {
         updatedCorrectAnswerIndexes[index] = 0; // Incorrect answer
       }
     });
@@ -286,7 +291,7 @@ function Quiz() {
                 <TF onAnswer={handleUserInput}></TF>
               </div>
             )}
-            {currQuestionIndex < currQuiz.numQuestions && questions && questions[currQuestionIndex].type === "MTF" && (
+            {/* {currQuestionIndex < currQuiz.numQuestions && questions && questions[currQuestionIndex].type === "MTF" && (
               <div>
                 <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
                 <p className="text-xl">
@@ -298,12 +303,12 @@ function Quiz() {
                   onAnswer={handleUserInput}
                 ></MTF>
               </div>
-            )}
+            )} */}
             <div className="mx-auto my-auto ">
               <CountdownCircleTimer
                 isPlaying={true}
                 key={timerKey}
-                duration={2}
+                duration={15}
                 colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
                 colorsTime={[10, 5, 2, 0]}
                 onComplete={() => {

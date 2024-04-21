@@ -13,10 +13,10 @@ const Result = () => {
     console.log(location.state);
   }, [location]);
 
-  const handleExplanation = (question) => {
+  const handleExplanation = (question,index) => {
    
     console.log(question);
-    navigate(`${url}/explanation`, { state: { question: question } });
+    navigate(`${url}/explanation`, { state: { question,userAnswers:location.state.userAnswers,index:index,correctAnswers:location.state.correctAnswers,actualAnswers:location.state.actualAnswers } });
   }
 
 
@@ -37,25 +37,26 @@ const Result = () => {
           </div>
         </CardHeader>
 
-        <CardBody className="flex flex-col items-center justify-center h-auto overflow-y-auto mt-10 mb-3 ">
-          {location.state.quiz.map((item, index) => (
-            <Accordion defaultExpandedKeys={["2"]} className={`${location.state.correctAnswerIndexes.includes(index) ? 'bg-green' : 'bg-red-400'}pt-10`}>
+        <CardBody className="flex flex-col items-center justify-center h-auto overflow-y-auto mt-10 mb-3 pt-40 ">
+          {location.state.questions.map((item, index) => (
+            <Accordion defaultExpandedKeys={["2"]} key={index} >
+            
               <AccordionItem
                 key="1"
                 aria-label="Accordion 1"
                 subtitle="Press to expand"
                 title={`Question ${index + 1}`}
-
+                className={`${location.state.correctAnswerIndexes[index] === 1 ? 'bg-green-200' : 'bg-red-400'} `}
               >
-                {item.type === "MTF" || item.type === "MCQ" ? (
+                { item.type === "MCQ" ? (
                     <>
                   <h2>{item.question}</h2>
-                  <Button color="primary" onClick={()=>handleExplanation(item)}>View Explanation</Button>
+                  <Button color="primary" onClick={()=>handleExplanation(item,index)}>View Explanation</Button>
                   </>
                 ) : item.type === "TrueFalse" || item.type === "FITB" ? (
                     <>
                   <h2>{item.sentence}</h2>
-                  <Button color="primary" onClick={()=>handleExplanation(item)}>View Explanation</Button>
+                  <Button color="primary" onClick={()=>handleExplanation(item,index)}>View Explanation</Button>
                   </>
                 ) : null}
               </AccordionItem>
