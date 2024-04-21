@@ -159,7 +159,7 @@ function Quiz() {
         updatedCorrectAnswerIndexes[index] = 1;
       } else if (
         questions[index].type === "MTF" &&
-        answer.every((ele, i) => ele === questions[index].answers[i]-1)
+        answer.every((ele, i) => ele === questions[index].answers[i])
       ) {
         updatedCorrectAnswerIndexes[index] = 1;
       } else {
