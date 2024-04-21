@@ -80,7 +80,7 @@ function Quiz() {
        console.log(currQuestionIndex);
        return () => clearTimeout(timer);
     } else  {
-       navigate(`/result/${currQuiz.title}`, { state: { quiz: currQuiz, score , correctAnswerIndexes } });
+       navigate(`/result/${currQuiz.title}`, { state: { quiz: questions, score , correctAnswerIndexes } });
     }
    }, [currQuestionIndex, questions, userAnswers, navigate, currQuiz]);
    
