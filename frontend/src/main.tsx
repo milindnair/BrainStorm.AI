@@ -16,6 +16,8 @@ import QuizDetails from "./screens/QuizDetails.tsx";
 import Quiz from "./screens/Quiz.tsx";
 import Search from "./screens/Search.tsx";
 import Leaderboard from "./screens/Leaderboard.tsx";
+import Result from "./screens/Result.tsx";
+import Explanation from "./screens/Explanation.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -31,9 +33,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/home" element={<App />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/quizDetails/:qid" element={<QuizDetails />}/>
-              <Route path="/quiz/:qid" element={<Quiz />}/>
+              <Route path="/quiz/:qid" element={<Quiz />} />
               <Route path="/search" element={<Search />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/result/:qid" element={<Result />} />
+              <Route path="/result/:qid/explanation" element={<Explanation />} />
             </Routes>
           </SnackbarProvider>
         </BgImageContainer>
