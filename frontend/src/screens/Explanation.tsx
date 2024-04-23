@@ -41,11 +41,11 @@ function Explanation() {
           questionText = location.state.question.question;
         }
   
-        // const response = await axios.post("http://localhost:8000/explanation", {
-        //   question: questionText,
-        //   answer: location.state.question.key,
-        // //   summary: "Your summary here", // Replace "Your summary here" with actual summary
-        // });
+        const response = await axios.post("http://localhost:8000/explanation", {
+          question: questionText,
+          answer: location.state.question.key,
+        //   summary: "Your summary here", // Replace "Your summary here" with actual summary
+        });
         setExplanation(response.data.explanation);
         console.log(explanation);
       } catch (error) {

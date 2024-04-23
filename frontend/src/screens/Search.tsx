@@ -39,11 +39,11 @@ const Search = () => {
       <div className="flex flex-row items-center w-full mt-5 ">
         <ArrowLeft
           size={32}
-          color="#000000"
+          color="#ffff"
           className="w-[10%]"
           onClick={() => navigate(-1)}
         />
-        <h1 className="text-3xl font-rubik text-center text-black w-[68%]">
+        <h1 className="text-3xl font-rubik text-center text-white w-[68%]">
           Search
         </h1>
       </div>

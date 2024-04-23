@@ -15,6 +15,7 @@ import { db } from "../utils/Firebaseconfig";
 import { useSnackbar } from "notistack";
 import UploadPDF from "../components/UploadPDF";
 import { Spinner } from "@nextui-org/react";
+import Loader from "./Loader";
 
 const mcqEndpoint = import.meta.env.VITE_MCQ_ENDPOINT;
 const trueOrFalseEndpoint = import.meta.env.VITE_TRUEORFALSE_ENDPOINT;
@@ -119,7 +120,7 @@ const CreateQuiz = () => {
         fitb: fitbquestions,
         truefalse: truefalsequestions,
         // matchthefollowing: matchthefollowingquestions,
-        score: 0, 
+        score: 0,
       };
 
       const today = new Date();
@@ -135,20 +136,18 @@ const CreateQuiz = () => {
       console.log("Document written with ID: ", docRef.id);
 
       let userId = localStorage.getItem("uid");
-      
+
       if (!userId) {
         throw new Error("User ID not found in local storage");
       }
       userId = userId.replace(/"/g, "");
-  
-      const userDocRef = doc(db, "users", userId);
 
+      const userDocRef = doc(db, "users", userId);
 
       const newQuiz = {
         id: customDocId,
-        status: "generated", 
+        status: "generated",
       };
-
 
       await setDoc(
         userDocRef,
@@ -156,6 +155,15 @@ const CreateQuiz = () => {
         { merge: true }
       );
       console.log("User document updated with new quiz");
+      //add the quiz to the quizzes
+      let quizzesString = localStorage.getItem("quizzes");
+      let quizzesArray = quizzesString ? JSON.parse(quizzesString) : [];
+
+      // Append the new quiz to the array
+      quizzesArray.push(newQuiz);
+
+      // Convert the updated array back into a string and store it in localStorage
+      localStorage.setItem("quizzes", JSON.stringify(quizzesArray));
 
       enqueueSnackbar("Quiz added Successfully!", { variant: "success" });
     } catch (error) {
@@ -172,11 +180,9 @@ const CreateQuiz = () => {
       enqueueSnackbar("Summary retrieved successfully!", {
         variant: "success",
       });
-      setShowSnackbar(true); 
+      setShowSnackbar(true);
     }
   }, [summary, enqueueSnackbar]);
-
-
 
   return (
     <div className="h-full flex flex-col justify-between">
@@ -315,13 +321,14 @@ const CreateQuiz = () => {
           </Button>
         </div>
       </div>
-      {isLoading && (
+      {!isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center">
-          <Spinner
+          {/* <Spinner
             label="Loading..."
             color="warning"
             className="text-red-400"
-          />
+          /> */}
+          <Loader />
         </div>
       )}
     </div>

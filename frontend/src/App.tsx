@@ -22,6 +22,17 @@ import { db } from "./utils/Firebaseconfig";
 function App() {
   const [user, setUser] = useState("");
   const [userPhoto, setUserPhoto] = useState("");
+  const [quizzes,setQuizzes] = useState([
+    {
+      id: "ANIMAL2_2024-04-22",
+      status: "generated",
+    },
+    {
+      status: "generated",
+      id: "Animal_2024-04-21",
+    },
+
+  ]);
   const navigate = useNavigate();
   useEffect(() => {
     const user = localStorage.getItem("name");
@@ -74,18 +85,17 @@ function App() {
     });
    };
    
+   useEffect(() => {
+    const quizzesString = localStorage.getItem("quizzes");
+    const quizzesArray = JSON.parse(quizzesString);
+    console.log("Quizzes array:", quizzesArray);
+    setQuizzes(quizzesArray);
+    console.log("Quizzes:", quizzes);
+   },[]);
 
-  const quizzes = [
-    {
-      id: "ANIMAL2_2024-04-22",
-      status: "generated",
-    },
-    {
-      status: "generated",
-      id: "Animal_2024-04-21",
-    },
 
-  ];
+  
+
 
   return (
     <div className="h-[100vh]">
