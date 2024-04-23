@@ -14,6 +14,7 @@ function QuizDetails() {
   const { qid } = useParams();
   const navigate = useNavigate();
   const [status,setStatus] = useState('');
+  const [quizId,setQuizId] = useState('');
   const [quiz, setQuiz] = useState({
     title: "",
     description: "",
@@ -32,12 +33,13 @@ function QuizDetails() {
   // }
 
   const handleSubmit = () => {
-    navigate(`/quiz/${quiz.title}`,{ state: { quiz: quiz }});
+    navigate(`/quiz/${quiz.title}`,{ state: { quiz: quiz,id:quizId }});
   };
 
   useEffect(() => {
     const quizId = location.pathname.split("/")[2];
     console.log(quizId);
+    setQuizId(quizId);
     
     // fetch quiz details from the local storage
     const quizData = localStorage.getItem(quizId);
@@ -50,9 +52,10 @@ function QuizDetails() {
       }
     });
     
-    console.log(quiz);
+    
   }, []);
 
+  console.log(quiz);
   return (
     <div className="h-full flex flex-col justify-between">
       <Card className="h-[95vh] w-[90vw] mt-5 mx-auto">

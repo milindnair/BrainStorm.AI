@@ -14,11 +14,25 @@ import MCQ from "../modules/optionFormats/MCQ";
 import MTF from "../modules/optionFormats/MTF";
 import TF from "../modules/optionFormats/TF";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BsExclamationLg } from "react-icons/bs";
+import Report from "../components/Report";
 
 function Quiz() {
   const navigate = useNavigate();
   const location = useLocation();
-   
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleReportClick = () => {
+    setIsOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setReportSubmittedRecently(true);
+    setCurrQuestionIndex((prevIndex) => prevIndex + 1); // Move to the next question
+    setTimerKey(Date.now());
+  };
+
   // defining format of quiz for no later errors
   const [currQuiz, setQuiz] = useState({
     categories: ["Category1", "Category2", "..."],
@@ -34,20 +48,20 @@ function Quiz() {
     //     question: "Matching question 1",
     //     lhs: ["Option 1", "Option 2", "..."],
     //     rhs: ["Option A", "Option B", "..."],
-    //     answers: [0, 1], 
+    //     answers: [0, 1],
     //   },
     // ],
     mcq: [
       {
         question: "Multiple choice question 1",
         options: ["Option A", "Option B", "..."],
-        correct_answer_index: 1, 
+        correct_answer_index: 1,
       },
     ],
     truefalse: [
       {
         sentence: "True or False statement 1",
-        answer: true, 
+        answer: true,
       },
     ],
     numQuestions: 10,
@@ -55,6 +69,7 @@ function Quiz() {
   });
   const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
   const [timerKey, setTimerKey] = useState(Date.now());
+  const [reportSubmittedRecently, setReportSubmittedRecently] = useState(false);
 
   const [questions, setQuestions] = useState([{ type: "none" }]);
   const [userAnswers, setUserAnswers] = useState([]);
@@ -62,30 +77,45 @@ function Quiz() {
     new Array(questions.length).fill(0) || null
   );
   const [score, setScore] = useState(0);
-  const [actualAnswers, setActualAnswers] = useState([])
+  const [actualAnswers, setActualAnswers] = useState([]);
 
   useEffect(() => {
     const quiz = location.state.quiz;
     setQuiz(quiz);
     console.log(quiz);
-  },[]);
- 
-
+  }, []);
 
   useEffect(() => {
     if (currQuiz && currQuestionIndex < questions.length) {
-       const timer = setTimeout(() => {
-         setCurrQuestionIndex((prevIndex) => (prevIndex + 1));
-         setTimerKey(Date.now());
-       }, 15000);
-       console.log(currQuestionIndex);
-       return () => clearTimeout(timer);
-    } else  {
-       navigate(`/result/${currQuiz.title}`, { state: { questions, score , correctAnswerIndexes,actualAnswers,userAnswers } });
+      const timer = setTimeout(() => {
+        //  setCurrQuestionIndex((prevIndex) => (prevIndex + 1));
+        if (!reportSubmittedRecently) {
+          setCurrQuestionIndex((prevIndex) => prevIndex + 1);
+        }
+        setTimerKey(Date.now());
+      }, 15000);
+      console.log(currQuestionIndex);
+      return () => clearTimeout(timer);
+    } else {
+      navigate(`/result/${currQuiz.title}`, {
+        state: {
+          questions,
+          score,
+          correctAnswerIndexes,
+          actualAnswers,
+          userAnswers,
+          id:location.state.id
+        },
+      });
     }
-   }, [currQuestionIndex, questions, userAnswers, navigate, currQuiz]);
-   
-
+  }, [
+    currQuestionIndex,
+    questions,
+    userAnswers,
+    navigate,
+    currQuiz,
+    reportSubmittedRecently,
+  ]);
 
   useEffect(() => {
     if (currQuiz) {
@@ -184,16 +214,15 @@ function Quiz() {
         }
         return answer;
       });
-    
+
       // Set the state variable to store all the answers
       setActualAnswers(answers);
-      console.log(answers)
+      console.log(answers);
       // set state variable
       setQuestions(shuffledQuestions);
       console.log(shuffledQuestions);
     }
   }, [currQuiz]);
-
 
   // handle users answers
   const handleUserInput = (response) => {
@@ -202,28 +231,30 @@ function Quiz() {
     setUserAnswers(updatedUserAnswers);
   };
 
-
   const handleSubmit = (userAnswers) => {
     const updatedCorrectAnswerIndexes = [...correctAnswerIndexes];
 
     userAnswers.forEach((answer, index) => {
       if (questions[index].type === "FITB" && answer === questions[index].key) {
-        console.log("Correct Answer: ",questions[index].key);
+        console.log("Correct Answer: ", questions[index].key);
         console.log("User answer: ", answer);
-        updatedCorrectAnswerIndexes[index] = 1; 
+        updatedCorrectAnswerIndexes[index] = 1;
       } else if (
         questions[index].type == "MCQ" &&
         answer ==
           questions[index].options[questions[index].correct_answer_index]
       ) {
-        console.log("Correct Answer: ",questions[index].options[questions[index].correct_answer_index]);
+        console.log(
+          "Correct Answer: ",
+          questions[index].options[questions[index].correct_answer_index]
+        );
         console.log("User answer: ", answer);
         updatedCorrectAnswerIndexes[index] = 1;
       } else if (
         questions[index].type == "TrueFalse" &&
         answer == questions[index].answer
       ) {
-        console.log("Correct Answer: ",questions[index].answer);
+        console.log("Correct Answer: ", questions[index].answer);
         console.log("User answer: ", answer);
         updatedCorrectAnswerIndexes[index] = 1;
       }
@@ -233,7 +264,7 @@ function Quiz() {
       // ) {
       //   console.log("Correct Answer: ",questions[index].answers);
       //   updatedCorrectAnswerIndexes[index] = 1;
-      // } 
+      // }
       else {
         updatedCorrectAnswerIndexes[index] = 0; // Incorrect answer
       }
@@ -261,36 +292,86 @@ function Quiz() {
             </h1>
           </CardHeader>
           <CardBody className="flex flex-col font-rubik">
-            {currQuestionIndex < currQuiz.numQuestions &&  questions && questions[currQuestionIndex].type === "FITB" && (
-              <div>
-                <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
-                <p className="text-xl">
-                  {questions[currQuestionIndex].sentence}
-                </p>
-                <FIB onAnswer={handleUserInput}></FIB>
-              </div>
-            )}
-            {currQuestionIndex < currQuiz.numQuestions && questions && questions[currQuestionIndex].type === "MCQ" && (
-              <div>
-                <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
-                <p className="text-xl">
-                  {questions[currQuestionIndex].question}
-                </p>
-                <MCQ
-                  options={questions[currQuestionIndex].options}
-                  onAnswer={handleUserInput}
-                ></MCQ>
-              </div>
-            )}
-            {currQuestionIndex < currQuiz.numQuestions && questions && questions[currQuestionIndex].type === "TrueFalse" && (
-              <div>
-                <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>
-                <p className="text-xl">
-                  {questions[currQuestionIndex].sentence}
-                </p>
-                <TF onAnswer={handleUserInput}></TF>
-              </div>
-            )}
+            <Report
+              isOpen={isOpen}
+              onClose={handleClose}
+              quiz={currQuiz.title}
+              question={questions[currQuestionIndex]}
+            />
+            {currQuestionIndex < currQuiz.numQuestions &&
+              questions &&
+              questions[currQuestionIndex].type === "FITB" && (
+                <div>
+                  <div className="flex gap-3">
+                    <h1 className="text-2xl">
+                      Question {currQuestionIndex + 1}
+                    </h1>
+                    <button
+                      className="flex gap-1 bg-yellow-500 rounded-lg p-2"
+                      onClick={handleReportClick}
+                    >
+                      <BsExclamationLg className="text-2xl text-red-500"></BsExclamationLg>
+                      <p className="font-rubik">Report</p>
+                    </button>
+                  </div>
+
+                  <p className="text-xl">
+                    {questions[currQuestionIndex].sentence}
+                  </p>
+
+                  <FIB onAnswer={handleUserInput}></FIB>
+                </div>
+              )}
+            {currQuestionIndex < currQuiz.numQuestions &&
+              questions &&
+              questions[currQuestionIndex].type === "MCQ" && (
+                <div>
+                  <div className="flex gap-3">
+                    <h1 className="text-2xl">
+                      Question {currQuestionIndex + 1}
+                    </h1>
+                    <button
+                      className="flex gap-1 bg-yellow-500 rounded-lg p-2"
+                      onClick={handleReportClick}
+                    >
+                      <BsExclamationLg className="text-2xl text-red-500"></BsExclamationLg>
+                      <p className="font-rubik">Report</p>
+                    </button>
+                  </div>
+
+                  <p className="text-xl">
+                    {questions[currQuestionIndex].question}
+                  </p>
+
+                  <MCQ
+                    options={questions[currQuestionIndex].options}
+                    onAnswer={handleUserInput}
+                  ></MCQ>
+                </div>
+              )}
+            {currQuestionIndex < currQuiz.numQuestions &&
+              questions &&
+              questions[currQuestionIndex].type === "TrueFalse" && (
+                <div>
+                  <div className="flex gap-3">
+                    <h1 className="text-2xl">
+                      Question {currQuestionIndex + 1}
+                    </h1>
+                    <button
+                      className="flex gap-1 bg-yellow-500 rounded-lg p-2"
+                      onClick={handleReportClick}
+                    >
+                      <BsExclamationLg className="text-2xl text-red-500"></BsExclamationLg>
+                      <p className="font-rubik">Report</p>
+                    </button>
+                  </div>
+                  <p className="text-xl">
+                    {questions[currQuestionIndex].sentence}
+                  </p>
+
+                  <TF onAnswer={handleUserInput}></TF>
+                </div>
+              )}
             {/* {currQuestionIndex < currQuiz.numQuestions && questions && questions[currQuestionIndex].type === "MTF" && (
               <div>
                 <h1 className="text-2xl">Question {currQuestionIndex + 1}</h1>

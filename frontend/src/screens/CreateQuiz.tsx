@@ -321,7 +321,7 @@ const CreateQuiz = () => {
           </Button>
         </div>
       </div>
-      {!isLoading && (
+      {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center">
           {/* <Spinner
             label="Loading..."

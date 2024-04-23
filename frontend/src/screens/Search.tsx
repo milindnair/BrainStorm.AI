@@ -78,7 +78,7 @@ const Search = () => {
           <Card className=" space-y-5 p-4 mt-3" radius="lg">
             {matchingQuizzes.length > 0 ? (
               matchingQuizzes.map((quiz, index) => (
-                <div key={index}>
+                <div key={index} onClick={()=>navigate(`/quizDetails/${quiz.id}`, { replace: true })}>
                   {" "}
                   {/* Added key for list items */}
                   <div>{quiz.id}</div>{" "}

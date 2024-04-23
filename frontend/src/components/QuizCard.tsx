@@ -49,7 +49,7 @@ function QuizCard(props: Props) {
           <div className="w-[55%]">
             <h1 className="text-2xl">{quizData.title}</h1>
           </div>
-          {props.quiz.status == "Attempted" ? (
+          {props.quiz.status == "attempted" ? (
             <div className="flex items-center gap-2" onClick={handleQuizClick}>
               <IoReload />
               <h1 className="font-rubik">Re-Attempt</h1>
